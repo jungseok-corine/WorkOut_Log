@@ -10,23 +10,16 @@ import SwiftData
 
 @main
 struct WorkOut_LogApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-
+    @State private var container = AppContainer()
+    
     var body: some Scene {
+
         WindowGroup {
-            ContentView()
+//            if ProcessInfo.processInfo.arguments.contains("-UITestMode") {
+//                SessionListView(vm: SessionListViewModel(container: container))
+//            }
+            SessionListView(vm: SessionListViewModel(container: container))
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(container.modelContainer)
     }
 }

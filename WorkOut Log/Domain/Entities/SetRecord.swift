@@ -5,8 +5,6 @@
 //  Created by 오정석 on 14/10/2025.
 //
 
-import Foundation
-
 public struct SetRecord: Sendable, Equatable, Identifiable {
     public let id: String
     public var sessionID: String
