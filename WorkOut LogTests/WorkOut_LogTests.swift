@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import WorkOut_Log
+@testable import workout_log
 
 final class WorkOut_LogTests: XCTestCase {
 

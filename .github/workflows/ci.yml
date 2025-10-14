@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Unit Tests
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Select Xcode
+      run: sudo xcode-select -s /Applications/Xcode_16.0.app
+
+    - name: Build and Test
+      run: |
+        xcodebuild -scheme "WorkOut Log" \
+                   -destination 'platform=iOS Simulator,name=iPhone 16' \
+                   clean build test
+
+  ui-test:
+    name: UI Tests (Optional)
+    runs-on: macos-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Select Xcode
+      run: sudo xcode-select -s /Applications/Xcode_16.0.app
+
+    - name: UI Test
+      run: |
+        xcodebuild -scheme "WorkOut Log" \
+                   -destination 'platform=iOS Simulator,name=iPhone 16' \
+                   clean build-for-testing test-without-building \
+                   -only-testing:WorkOut\ LogUITests
