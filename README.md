@@ -10,20 +10,28 @@ A modern workout tracking app built with SwiftUI, SwiftData, and Clean Architect
 - [x] Real-time volume calculation
 - [x] SwiftData persistence with proper relationships
 - [x] Clean Architecture (Presentation → Domain ← Data)
+- [x] Comprehensive unit and UI tests
+- [x] Dependency injection via AppContainer
 
-### Week 2 (Insights & Polish) 🚧
+### Week 2 (Analytics & Features) 🚧
+- [x] Exercise categories (7 muscle groups)
+- [x] BodyMetric entity for body composition tracking
+- [x] Personal Records (PR) computation with Epley 1RM formula
+- [x] Volume aggregation by category with ISO week support
+- [x] Advanced use cases (ComputePR, ComputeVolumesByCategory)
 - [ ] Weekly & monthly volume charts (using Charts framework)
-- [ ] Personal Records (PR) tracking with optional Epley 1RM
-- [ ] Exercise search and auto-complete
-- [ ] Quick-pick recent exercises
+- [ ] Exercise search and auto-complete UI
+- [ ] Recent exercises functionality
+- [ ] Body metrics tracking UI
+
+### Week 3 (Documentation & Polish) ✅
+- [x] Complete documentation with architecture diagrams
+- [x] Architecture Decision Records (4 ADRs)
+- [x] GitHub Actions CI/CD pipeline
+- [x] Export documentation scripts (PDF/HTML)
+- [x] Developer guide with Mermaid diagrams
 - [ ] Accessibility improvements (VoiceOver, Dynamic Type)
 - [ ] Snapshot tests for key screens
-
-### Week 3 (DX & Release) 🚧
-- [ ] Complete documentation with architecture diagrams
-- [ ] Architecture Decision Records (ADRs)
-- [ ] GitHub Actions CI/CD
-- [ ] Export documentation scripts
 
 ## Architecture
 
@@ -119,15 +127,17 @@ xcodebuild -scheme workout_logUITests -destination 'platform=iOS Simulator,name=
 ### Core Entities
 
 - **WorkoutSession**: Date, note, and collection of sets
-- **SetRecord**: Weight, reps, exercise ID, and order within session
-- **Exercise**: Name, body part, and unique identifier
+- **SetRecord**: Weight, reps, exercise ID, order, and calculated volume
+- **Exercise**: Name, category (7 muscle groups), and unique identifier
+- **BodyMetric**: Body weight, body fat %, muscle mass with timestamps
 
 ### Relationships
 
 ```
-WorkoutSession (1) ─── (many) SetRecord
-                              ↓
-                         Exercise (reference)
+WorkoutSession (1) ─── (many) SetRecord ─── (ref) Exercise
+                                                      ↓
+                                                 ExerciseCategory
+BodyMetric ─── (independent) ─── Date timeline
 ```
 
 ## Contributing
@@ -143,4 +153,25 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Current Status**: Week 1 implementation complete with full CRUD operations and live volume updates.
+## Documentation
+
+📚 **Complete technical documentation available:**
+
+- **[Developer Guide](Docs/workout_log_guide.md)**: Comprehensive architecture guide with Mermaid diagrams
+- **[ADR-001](ADR/ADR-001-storage-swiftdata.md)**: SwiftData adoption rationale
+- **[ADR-002](ADR/ADR-002-architecture-clean.md)**: Clean Architecture principles
+- **[ADR-003](ADR/ADR-003-iso-week-aggregation.md)**: ISO week calendar for analytics
+- **[ADR-004](ADR/ADR-004-pr-definition.md)**: Personal Record definition with Epley formula
+
+### Generate PDF Documentation
+
+```bash
+# Export all documentation to PDF and HTML
+cd Docs && ./export.sh
+
+# Output: Docs/exports/ with PDF and HTML files
+```
+
+---
+
+**Current Status**: Week 1 foundations complete + Week 2 domain layer + comprehensive documentation. Ready for UI implementation and analytics features.
