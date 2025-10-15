@@ -16,10 +16,17 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
     }
 
     func upsert(_ exercise: Exercise) async throws {
+        // Validate exercise
+        guard exercise.isValid else {
+            throw NSError(domain: "ExerciseRepository", code: 1,
+                         userInfo: [NSLocalizedDescriptionKey: "upperBody requires upper subcategory"])
+        }
+
         // Extract values to avoid macro capture
         let exerciseID = exercise.id
         let exerciseName = exercise.name
-        let exerciseCategory = exercise.category
+        let exerciseMainRaw = exercise.main.rawValue
+        let exerciseUpperRaw = exercise.upper?.rawValue
 
         let existingPredicate = #Predicate<ExerciseModel> { model in
             model.id == exerciseID
@@ -30,7 +37,8 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
         if let existing = try context.fetch(descriptor).first {
             // Update existing
             existing.name = exerciseName
-            existing.category = exerciseCategory
+            existing.mainRaw = exerciseMainRaw
+            existing.upperRaw = exerciseUpperRaw
             existing.lastUsedDate = Date() // Update last used date
         } else {
             // Create new
@@ -70,10 +78,21 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
         return try context.fetch(descriptor).map { $0.toDomain() }
     }
 
-    func fetchByCategory(_ category: ExerciseCategory) async throws -> [Exercise] {
-        let categoryRaw = category.rawValue
+    func fetchByMain(_ main: ExerciseCategoryMain) async throws -> [Exercise] {
+        let mainRaw = main.rawValue
         let predicate = #Predicate<ExerciseModel> { model in
-            model.categoryRaw == categoryRaw
+            model.mainRaw == mainRaw
+        }
+        let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
+        let descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate, sortBy: sort)
+
+        return try context.fetch(descriptor).map { $0.toDomain() }
+    }
+
+    func fetchByUpper(_ upper: ExerciseCategoryUpper) async throws -> [Exercise] {
+        let upperRaw = upper.rawValue
+        let predicate = #Predicate<ExerciseModel> { model in
+            model.upperRaw == upperRaw
         }
         let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
         let descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate, sortBy: sort)

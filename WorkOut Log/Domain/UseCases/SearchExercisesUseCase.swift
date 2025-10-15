@@ -12,11 +12,11 @@ public struct SearchExercisesUseCase {
         self.repo = repo
     }
 
-    public func callAsFunction(query: String, category: ExerciseCategory? = nil) async throws -> [Exercise] {
+    public func callAsFunction(query: String, main: ExerciseCategoryMain? = nil) async throws -> [Exercise] {
         let searchResults = try await repo.search(nameLike: query)
 
-        if let category = category {
-            return searchResults.filter { $0.category == category }
+        if let main = main {
+            return searchResults.filter { $0.main == main }
         }
 
         return searchResults

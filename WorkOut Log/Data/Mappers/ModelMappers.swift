@@ -10,14 +10,20 @@ import SwiftData
 
 extension ExerciseModel {
     func toDomain() -> Exercise {
-        Exercise(id: id, name: name, category: category)
+        Exercise(
+            id: id,
+            name: name,
+            main: ExerciseCategoryMain(rawValue: mainRaw) ?? .fullBody,
+            upper: upperRaw.flatMap { ExerciseCategoryUpper(rawValue: $0) }
+        )
     }
 
     static func fromDomain(_ exercise: Exercise) -> ExerciseModel {
         ExerciseModel(
             id: exercise.id,
             name: exercise.name,
-            categoryRaw: exercise.category.rawValue
+            mainRaw: exercise.main.rawValue,
+            upperRaw: exercise.upper?.rawValue
         )
     }
 }
