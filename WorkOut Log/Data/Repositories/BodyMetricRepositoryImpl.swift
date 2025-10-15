@@ -22,7 +22,8 @@ final class BodyMetricRepositoryImpl: BodyMetricRepository {
     }
 
     func update(_ metric: BodyMetric) async throws {
-        let predicate = #Predicate<BodyMetricModel> { $0.id == metric.id }
+        let metricID = metric.id
+        let predicate = #Predicate<BodyMetricModel> { $0.id == metricID }
         var descriptor = FetchDescriptor<BodyMetricModel>(predicate: predicate)
         descriptor.fetchLimit = 1
 
@@ -36,7 +37,8 @@ final class BodyMetricRepositoryImpl: BodyMetricRepository {
     }
 
     func delete(id: String) async throws {
-        let predicate = #Predicate<BodyMetricModel> { $0.id == id }
+        let targetID = id
+        let predicate = #Predicate<BodyMetricModel> { $0.id == targetID }
         var descriptor = FetchDescriptor<BodyMetricModel>(predicate: predicate)
         descriptor.fetchLimit = 1
 
@@ -47,7 +49,8 @@ final class BodyMetricRepositoryImpl: BodyMetricRepository {
     }
 
     func fetch(by id: String) async throws -> BodyMetric? {
-        let predicate = #Predicate<BodyMetricModel> { $0.id == id }
+        let targetID = id
+        let predicate = #Predicate<BodyMetricModel> { $0.id == targetID }
         var descriptor = FetchDescriptor<BodyMetricModel>(predicate: predicate)
         descriptor.fetchLimit = 1
 
@@ -55,7 +58,9 @@ final class BodyMetricRepositoryImpl: BodyMetricRepository {
     }
 
     func fetchRange(start: Date, end: Date) async throws -> [BodyMetric] {
-        let predicate = #Predicate<BodyMetricModel> { $0.date >= start && $0.date < end }
+        let startDate = start
+        let endDate = end
+        let predicate = #Predicate<BodyMetricModel> { $0.date >= startDate && $0.date < endDate }
         let sort = [SortDescriptor(\BodyMetricModel.date, order: .forward)]
         let descriptor = FetchDescriptor<BodyMetricModel>(predicate: predicate, sortBy: sort)
 
