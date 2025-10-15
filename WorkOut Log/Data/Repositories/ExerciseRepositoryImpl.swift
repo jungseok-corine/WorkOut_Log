@@ -16,16 +16,21 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
     }
 
     func upsert(_ exercise: Exercise) async throws {
-        // Check if exercise already exists
+        // Extract values to avoid macro capture
         let exerciseID = exercise.id
-        let existingPredicate = #Predicate<ExerciseModel> { $0.id == exerciseID }
+        let exerciseName = exercise.name
+        let exerciseCategory = exercise.category
+
+        let existingPredicate = #Predicate<ExerciseModel> { model in
+            model.id == exerciseID
+        }
         var descriptor = FetchDescriptor<ExerciseModel>(predicate: existingPredicate)
         descriptor.fetchLimit = 1
 
         if let existing = try context.fetch(descriptor).first {
             // Update existing
-            existing.name = exercise.name
-            existing.category = exercise.category
+            existing.name = exerciseName
+            existing.category = exerciseCategory
             existing.lastUsedDate = Date() // Update last used date
         } else {
             // Create new
@@ -55,7 +60,9 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
     }
 
     func recent(limit: Int) async throws -> [Exercise] {
-        let predicate = #Predicate<ExerciseModel> { $0.lastUsedDate != nil }
+        let predicate = #Predicate<ExerciseModel> { model in
+            model.lastUsedDate != nil
+        }
         let sort = [SortDescriptor(\ExerciseModel.lastUsedDate, order: .reverse)]
         var descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate, sortBy: sort)
         descriptor.fetchLimit = limit
@@ -65,7 +72,9 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
 
     func fetchByCategory(_ category: ExerciseCategory) async throws -> [Exercise] {
         let categoryRaw = category.rawValue
-        let predicate = #Predicate<ExerciseModel> { $0.categoryRaw == categoryRaw }
+        let predicate = #Predicate<ExerciseModel> { model in
+            model.categoryRaw == categoryRaw
+        }
         let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
         let descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate, sortBy: sort)
 
@@ -81,7 +90,9 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
 
     func fetch(by id: String) async throws -> Exercise? {
         let exerciseID = id
-        let predicate = #Predicate<ExerciseModel> { $0.id == exerciseID }
+        let predicate = #Predicate<ExerciseModel> { model in
+            model.id == exerciseID
+        }
         var descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate)
         descriptor.fetchLimit = 1
 
