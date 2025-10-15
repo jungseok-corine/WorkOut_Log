@@ -13,12 +13,8 @@ struct WorkOut_LogApp: App {
     @State private var container = AppContainer()
     
     var body: some Scene {
-
         WindowGroup {
-//            if ProcessInfo.processInfo.arguments.contains("-UITestMode") {
-//                SessionListView(vm: SessionListViewModel(container: container))
-//            }
-            SessionListView(vm: SessionListViewModel(container: container))
+            MainTabView(container: container)
         }
         .modelContainer(container.modelContainer)
     }

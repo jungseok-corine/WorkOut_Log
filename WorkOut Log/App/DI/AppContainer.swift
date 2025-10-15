@@ -34,6 +34,7 @@ final class AppContainer {
     // Analytics UseCases
     let computeVolumesByCategory: ComputeVolumesByCategoryUseCase
     let computePR: ComputePRUseCase
+    let computeVolumeTrend: ComputeVolumeTrendUseCase
 
     // Body Metrics UseCases
     let createBodyMetric: CreateBodyMetricUseCase
@@ -67,6 +68,10 @@ final class AppContainer {
             exerciseRepo: exerciseRepo
         )
         self.computePR = ComputePRUseCase(sessionRepo: sessionRepo)
+        self.computeVolumeTrend = ComputeVolumeTrendUseCase(
+            sessionRepo: sessionRepo,
+            exerciseRepo: exerciseRepo
+        )
 
         // Initialize body metrics use cases
         self.createBodyMetric = CreateBodyMetricUseCase(repo: bodyMetricRepo)
