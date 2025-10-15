@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SessionDetailView: View {
     let sessionID: String
-    @State private var exerciseID: String = "lat-pulldown" // 임시
+    @State private var selectedExercise: Exercise?
+    @State private var showExercisePicker = false
     @State private var weight: String = ""
     @State private var reps: String = ""
     @State private var sets: [SetRecord] = []
@@ -62,6 +63,29 @@ struct SessionDetailView: View {
 
                 // Add Set Section
                 VStack(spacing: 12) {
+                    // Exercise selection
+                    Button {
+                        showExercisePicker = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "dumbbell.fill")
+                            if let exercise = selectedExercise {
+                                Text(exercise.name)
+                                Spacer()
+                                Text(exercise.main.displayName)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                Text("Select Exercise")
+                                Spacer()
+                            }
+                        }
+                        .padding()
+                        .background(Color(.systemGray5))
+                        .cornerRadius(8)
+                    }
+                    .accessibilityIdentifier("openExercisePicker")
+
                     HStack(spacing: 12) {
                         TextField("Weight (kg)", text: $weight)
                             .keyboardType(.decimalPad)
@@ -76,7 +100,7 @@ struct SessionDetailView: View {
                         }
                         .accessibilityIdentifier("addSetButton")
                         .buttonStyle(.borderedProminent)
-                        .disabled(weight.isEmpty || reps.isEmpty || isLoading)
+                        .disabled(selectedExercise == nil || weight.isEmpty || reps.isEmpty || isLoading)
                     }
 
                     if let errorMessage = errorMessage {
@@ -91,10 +115,23 @@ struct SessionDetailView: View {
         }
         .navigationTitle("Session Detail")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showExercisePicker) {
+            ExercisePickerView(
+                vm: ExercisePickerViewModel(container: container),
+                onSelect: { exercise in
+                    selectedExercise = exercise
+                }
+            )
+        }
         .task { await reload() }
     }
 
     private func addSetTapped() async {
+        guard let exercise = selectedExercise else {
+            errorMessage = "Please select an exercise first"
+            return
+        }
+
         guard let w = Double(weight), let r = Int(reps) else {
             errorMessage = "Please enter valid weight and reps"
             return
@@ -105,7 +142,7 @@ struct SessionDetailView: View {
 
         do {
             let order = sets.count
-            _ = try await container.addSet(sessionID: sessionID, exerciseID: exerciseID, weight: w, reps: r, order: order)
+            _ = try await container.addSet(sessionID: sessionID, exerciseID: exercise.id, weight: w, reps: r, order: order)
             await reload()
 
             // Clear inputs on success
