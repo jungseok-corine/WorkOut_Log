@@ -5,6 +5,7 @@
 //  Created by 오정석 on 14/10/2025.
 //
 
+import Foundation
 import SwiftData
 
 @Model final class ExerciseModel {
