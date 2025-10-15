@@ -66,4 +66,11 @@ final class SessionListViewModel {
             await refresh()
         }
     }
+
+    func deleteSession(id: String) {
+        Task {
+            try await c.deleteSession(sessionID: id)
+            await refresh()
+        }
+    }
 }

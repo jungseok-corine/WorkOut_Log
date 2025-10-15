@@ -26,6 +26,15 @@ struct SessionListView: View {
                         Text("\(s.totalVolume) vol").foregroundStyle(.secondary)
                     }
                 }
+                .accessibilityIdentifier("sessionRow_\(s.id)")
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        vm.deleteSession(id: s.id)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    .accessibilityIdentifier("deleteSession")
+                }
             }
             .navigationDestination(for: String.self) { id in
                 SessionDetailView(sessionID: id, container: container)

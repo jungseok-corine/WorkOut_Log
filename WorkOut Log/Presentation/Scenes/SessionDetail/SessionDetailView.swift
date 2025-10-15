@@ -48,6 +48,14 @@ struct SessionDetailView: View {
                                     .foregroundStyle(.secondary)
                             }
                             .padding(.vertical, 2)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    Task { await deleteSetTapped(setID: set.id) }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .accessibilityIdentifier("deleteSet")
+                            }
                         }
                     }
                 }
@@ -105,6 +113,20 @@ struct SessionDetailView: View {
             reps = ""
         } catch {
             errorMessage = "Failed to add set: \(error.localizedDescription)"
+        }
+
+        isLoading = false
+    }
+
+    private func deleteSetTapped(setID: String) async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            try await container.deleteSet(setID: setID)
+            await reload()
+        } catch {
+            errorMessage = "Failed to delete set: \(error.localizedDescription)"
         }
 
         isLoading = false

@@ -20,6 +20,7 @@ final class AppContainer {
 
     // Session UseCases
     let createSession: CreateSessionUseCase
+    let deleteSession: DeleteSessionUseCase
     let addSet: AddSetUseCase
     let updateSet: UpdateSetUseCase
     let deleteSet: DeleteSetUseCase
@@ -49,6 +50,7 @@ final class AppContainer {
 
         // Initialize session use cases
         self.createSession = CreateSessionUseCase(repo: sessionRepo)
+        self.deleteSession = DeleteSessionUseCase(repo: sessionRepo)
         self.addSet = AddSetUseCase(repo: sessionRepo)
         self.updateSet = UpdateSetUseCase(repo: sessionRepo)
         self.deleteSet = DeleteSetUseCase(repo: sessionRepo)
