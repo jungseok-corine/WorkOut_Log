@@ -33,6 +33,7 @@
 		99DC4E2B2E9E3852006B8C3F /* Exceptions for "WorkOut Log" folder in "WorkOut LogTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Tests/DomainTests/AddSetUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
 			);
@@ -41,6 +42,7 @@
 		99DC4E2E2E9E387D006B8C3F /* Exceptions for "WorkOut Log" folder in "WorkOut Log" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Tests/DomainTests/AddSetUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
 			);
