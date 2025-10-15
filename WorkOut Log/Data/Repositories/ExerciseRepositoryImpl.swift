@@ -17,7 +17,8 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
 
     func upsert(_ exercise: Exercise) async throws {
         // Check if exercise already exists
-        let existingPredicate = #Predicate<ExerciseModel> { $0.id == exercise.id }
+        let exerciseID = exercise.id
+        let existingPredicate = #Predicate<ExerciseModel> { $0.id == exerciseID }
         var descriptor = FetchDescriptor<ExerciseModel>(predicate: existingPredicate)
         descriptor.fetchLimit = 1
 
@@ -42,8 +43,9 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
             return try await fetchAll()
         }
 
+        let searchQuery = query
         let predicate = #Predicate<ExerciseModel> { model in
-            model.name.localizedLowercase.contains(query)
+            model.name.localizedLowercase.contains(searchQuery)
         }
 
         let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
@@ -62,7 +64,8 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
     }
 
     func fetchByCategory(_ category: ExerciseCategory) async throws -> [Exercise] {
-        let predicate = #Predicate<ExerciseModel> { $0.categoryRaw == category.rawValue }
+        let categoryRaw = category.rawValue
+        let predicate = #Predicate<ExerciseModel> { $0.categoryRaw == categoryRaw }
         let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
         let descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate, sortBy: sort)
 
@@ -77,7 +80,8 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
     }
 
     func fetch(by id: String) async throws -> Exercise? {
-        let predicate = #Predicate<ExerciseModel> { $0.id == id }
+        let exerciseID = id
+        let predicate = #Predicate<ExerciseModel> { $0.id == exerciseID }
         var descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate)
         descriptor.fetchLimit = 1
 
