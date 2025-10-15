@@ -38,10 +38,13 @@
 				Tests/DomainTests/ComputePRUseCaseTests.swift,
 				Tests/DomainTests/ComputeVolumesByCategoryUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
+				Tests/DomainTests/DeleteSessionUseCaseTests.swift,
+				Tests/DomainTests/ExerciseTaxonomyTests.swift,
 				Tests/DomainTests/ExerciseUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
 				Tests/DomainTests/SessionListVolumeTests.swift,
 				Tests/DomainTests/SetCRUDTests.swift,
+				Tests/DomainTests/VolumeTrendTests.swift,
 			);
 			target = 99DC4DC52E9E2853006B8C3F /* WorkOut LogTests */;
 		};
@@ -53,10 +56,14 @@
 				Tests/DomainTests/ComputePRUseCaseTests.swift,
 				Tests/DomainTests/ComputeVolumesByCategoryUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
+				Tests/DomainTests/DeleteSessionUseCaseTests.swift,
+				Tests/DomainTests/ExerciseTaxonomyTests.swift,
 				Tests/DomainTests/ExerciseUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
 				Tests/DomainTests/SessionListVolumeTests.swift,
 				Tests/DomainTests/SetCRUDTests.swift,
+				Tests/DomainTests/VolumeTrendTests.swift,
+				"WorkOut-Log-Info.plist",
 			);
 			target = 99DC4DB62E9E2850006B8C3F /* WorkOut Log */;
 		};
@@ -438,11 +445,13 @@
 				DEVELOPMENT_TEAM = 8CKPNKA3V9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WorkOut-Log-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Workout Log";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
@@ -479,11 +488,13 @@
 				DEVELOPMENT_TEAM = 8CKPNKA3V9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WorkOut-Log-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Workout Log";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
