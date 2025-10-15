@@ -34,8 +34,14 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Tests/DomainTests/AddSetUseCaseTests.swift,
+				Tests/DomainTests/BodyMetricUseCaseTests.swift,
+				Tests/DomainTests/ComputePRUseCaseTests.swift,
+				Tests/DomainTests/ComputeVolumesByCategoryUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
+				Tests/DomainTests/ExerciseUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
+				Tests/DomainTests/SessionListVolumeTests.swift,
+				Tests/DomainTests/SetCRUDTests.swift,
 			);
 			target = 99DC4DC52E9E2853006B8C3F /* WorkOut LogTests */;
 		};
@@ -43,8 +49,14 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Tests/DomainTests/AddSetUseCaseTests.swift,
+				Tests/DomainTests/BodyMetricUseCaseTests.swift,
+				Tests/DomainTests/ComputePRUseCaseTests.swift,
+				Tests/DomainTests/ComputeVolumesByCategoryUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
+				Tests/DomainTests/ExerciseUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
+				Tests/DomainTests/SessionListVolumeTests.swift,
+				Tests/DomainTests/SetCRUDTests.swift,
 			);
 			target = 99DC4DB62E9E2850006B8C3F /* WorkOut Log */;
 		};
