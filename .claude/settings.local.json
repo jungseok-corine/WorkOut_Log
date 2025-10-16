@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(brew install:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(git push:*)",
+      "Bash(xcode-select:*)",
+      "Read(//Applications/**)",
+      "Bash(sudo xcode-select:*)",
+      "Bash(/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild:*)",
+      "Bash(/Applications/Xcode.app/Contents/Developer/usr/bin/xcrun simctl list devices available)",
+      "Bash(tee:*)",
+      "Read(//private/tmp/**)",
+      "Bash(git reset:*)",
+      "Bash(git fetch:*)",
+      "Bash(for branch in feat/week1-foundations feat/week2-3-and-extensions feat/ai-build)",
+      "Bash(do echo \"=== $branch vs origin/main ===\")",
+      "Bash(git rev-list:*)",
+      "Bash(done)",
+      "Bash(do echo \"=== $branch ahead/behind LOCAL main ===\")",
+      "Bash(git branch:*)",
+      "Bash(git rebase:*)",
+      "Bash(git merge-base:*)",
+      "Read(//Users/ojung/.ssh/**)",
+      "Bash(git remote set-url:*)",
+      "Bash(cat:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
