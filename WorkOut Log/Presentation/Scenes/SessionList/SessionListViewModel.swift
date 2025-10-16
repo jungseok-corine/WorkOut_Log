@@ -14,6 +14,7 @@ final class SessionListViewModel {
         let id: String
         let date: Date
         let totalVolume: Int
+        let categories: [ExerciseCategoryMain]
     }
     
     var sessions: [SessionUI] = []
@@ -35,10 +36,24 @@ final class SessionListViewModel {
 
         let ui = await withTaskGroup(of: SessionUI?.self) { group -> [SessionUI] in
             for s in list ?? [] {
-                group.addTask {
+                group.addTask { [c] in
                     let sets = try? await repo.fetchSets(sessionID: s.id)
                     let vol = Int((sets ?? []).map { $0.weight * Double($0.reps) }.reduce(0,+))
-                    return SessionUI(id: s.id, date: s.date, totalVolume: vol)
+
+                    // Get unique categories from exercises in this session
+                    var categories = Set<ExerciseCategoryMain>()
+                    for set in sets ?? [] {
+                        if let exercise = try? await c.exerciseRepo.fetch(by: set.exerciseID) {
+                            categories.insert(exercise.main)
+                        }
+                    }
+
+                    return SessionUI(
+                        id: s.id,
+                        date: s.date,
+                        totalVolume: vol,
+                        categories: Array(categories).sorted { $0.rawValue < $1.rawValue }
+                    )
                 }
             }
 
@@ -60,9 +75,9 @@ final class SessionListViewModel {
         }
     }
 
-    func cloneLatestToToday() {
+    func deleteSession(id: String) {
         Task {
-            _ = try await c.cloneLatest(newDate: .now)
+            try await c.deleteSession(sessionID: id)
             await refresh()
         }
     }

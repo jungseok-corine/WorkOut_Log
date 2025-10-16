@@ -20,11 +20,38 @@ struct SessionListView: View {
         NavigationStack {
             List(vm.sessions) { s in
                 NavigationLink(value: s.id) {
-                    HStack {
-                        Text(s.date, style: .date)
-                        Spacer()
-                        Text("\(s.totalVolume) vol").foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(s.date, style: .date)
+                            Spacer()
+                            Text("\(s.totalVolume) vol").foregroundStyle(.secondary)
+                        }
+
+                        // Category badges
+                        if !s.categories.isEmpty {
+                            HStack(spacing: 4) {
+                                ForEach(s.categories, id: \.self) { category in
+                                    Text(category.displayName)
+                                        .font(.caption2)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(categoryColor(category).opacity(0.2))
+                                        .foregroundStyle(categoryColor(category))
+                                        .cornerRadius(4)
+                                }
+                            }
+                            .accessibilityIdentifier("sessionRowCategories_\(s.id)")
+                        }
                     }
+                }
+                .accessibilityIdentifier("sessionRow_\(s.id)")
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        vm.deleteSession(id: s.id)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    .accessibilityIdentifier("deleteSession")
                 }
             }
             .navigationDestination(for: String.self) { id in
@@ -32,14 +59,21 @@ struct SessionListView: View {
             }
             .navigationTitle("WorkoutLog")
             .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("오늘 생성") { vm.createToday() }
                         .accessibilityIdentifier("createTodayButton")
-                    Button("최근 복제") { vm.cloneLatestToToday() }
-                        .accessibilityIdentifier("cloneLatestButton")
                 }
             }
             .task { vm.onAppear() }
+        }
+    }
+
+    private func categoryColor(_ category: ExerciseCategoryMain) -> Color {
+        switch category {
+        case .lowerBody: return .blue
+        case .upperBody: return .orange
+        case .cardio: return .red
+        case .fullBody: return .purple
         }
     }
 }

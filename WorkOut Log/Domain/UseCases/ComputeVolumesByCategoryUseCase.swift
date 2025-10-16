@@ -8,10 +8,10 @@
 import Foundation
 
 public struct CategoryVolume: Sendable, Equatable {
-    public let category: ExerciseCategory
+    public let category: ExerciseCategoryMain
     public let totalVolume: Double
 
-    public init(category: ExerciseCategory, totalVolume: Double) {
+    public init(category: ExerciseCategoryMain, totalVolume: Double) {
         self.category = category
         self.totalVolume = totalVolume
     }
@@ -30,8 +30,8 @@ public struct ComputeVolumesByCategoryUseCase {
         // Get all sessions in the date range
         let sessions = try await sessionRepo.fetchRange(start: start, end: end)
 
-        // Group volumes by category
-        var categoryVolumes: [ExerciseCategory: Double] = [:]
+        // Group volumes by main category
+        var categoryVolumes: [ExerciseCategoryMain: Double] = [:]
 
         for session in sessions {
             let sets = try await sessionRepo.fetchSets(sessionID: session.id)
@@ -40,7 +40,7 @@ public struct ComputeVolumesByCategoryUseCase {
                 // Get exercise to determine category
                 if let exercise = try await exerciseRepo.fetch(by: set.exerciseID) {
                     let volume = set.volume
-                    categoryVolumes[exercise.category, default: 0] += volume
+                    categoryVolumes[exercise.main, default: 0] += volume
                 }
             }
         }

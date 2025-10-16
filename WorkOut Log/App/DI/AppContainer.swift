@@ -20,6 +20,7 @@ final class AppContainer {
 
     // Session UseCases
     let createSession: CreateSessionUseCase
+    let deleteSession: DeleteSessionUseCase
     let addSet: AddSetUseCase
     let updateSet: UpdateSetUseCase
     let deleteSet: DeleteSetUseCase
@@ -27,12 +28,14 @@ final class AppContainer {
 
     // Exercise UseCases
     let upsertExercise: UpsertExerciseUseCase
+    let deleteExercise: DeleteExerciseUseCase
     let searchExercises: SearchExercisesUseCase
     let recentExercises: RecentExercisesUseCase
 
     // Analytics UseCases
     let computeVolumesByCategory: ComputeVolumesByCategoryUseCase
     let computePR: ComputePRUseCase
+    let computeVolumeTrend: ComputeVolumeTrendUseCase
 
     // Body Metrics UseCases
     let createBodyMetric: CreateBodyMetricUseCase
@@ -49,6 +52,7 @@ final class AppContainer {
 
         // Initialize session use cases
         self.createSession = CreateSessionUseCase(repo: sessionRepo)
+        self.deleteSession = DeleteSessionUseCase(repo: sessionRepo)
         self.addSet = AddSetUseCase(repo: sessionRepo)
         self.updateSet = UpdateSetUseCase(repo: sessionRepo)
         self.deleteSet = DeleteSetUseCase(repo: sessionRepo)
@@ -56,6 +60,7 @@ final class AppContainer {
 
         // Initialize exercise use cases
         self.upsertExercise = UpsertExerciseUseCase(repo: exerciseRepo)
+        self.deleteExercise = DeleteExerciseUseCase(repo: exerciseRepo)
         self.searchExercises = SearchExercisesUseCase(repo: exerciseRepo)
         self.recentExercises = RecentExercisesUseCase(repo: exerciseRepo)
 
@@ -65,6 +70,10 @@ final class AppContainer {
             exerciseRepo: exerciseRepo
         )
         self.computePR = ComputePRUseCase(sessionRepo: sessionRepo)
+        self.computeVolumeTrend = ComputeVolumeTrendUseCase(
+            sessionRepo: sessionRepo,
+            exerciseRepo: exerciseRepo
+        )
 
         // Initialize body metrics use cases
         self.createBodyMetric = CreateBodyMetricUseCase(repo: bodyMetricRepo)

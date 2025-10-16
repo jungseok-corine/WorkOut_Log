@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>ADR-001-storage-swiftdata</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="github.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">ADR-001-storage-swiftdata</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#adr-001-swiftdata-as-primary-storage-solution"
+id="toc-adr-001-swiftdata-as-primary-storage-solution"><span
+class="toc-section-number">1</span> ADR-001: SwiftData as Primary
+Storage Solution</a>
+<ul>
+<li><a href="#context" id="toc-context"><span
+class="toc-section-number">1.1</span> Context</a></li>
+<li><a href="#decision" id="toc-decision"><span
+class="toc-section-number">1.2</span> Decision</a></li>
+<li><a href="#rationale" id="toc-rationale"><span
+class="toc-section-number">1.3</span> Rationale</a>
+<ul>
+<li><a href="#why-swiftdata" id="toc-why-swiftdata"><span
+class="toc-section-number">1.3.1</span> Why SwiftData</a></li>
+</ul></li>
+<li><a href="#implementation-approach"
+id="toc-implementation-approach"><span
+class="toc-section-number">1.4</span> Implementation Approach</a>
+<ul>
+<li><a href="#schema-design" id="toc-schema-design"><span
+class="toc-section-number">1.4.1</span> Schema Design</a></li>
+<li><a href="#critical-swiftdata-patterns"
+id="toc-critical-swiftdata-patterns"><span
+class="toc-section-number">1.4.2</span> Critical SwiftData
+Patterns</a></li>
+</ul></li>
+<li><a href="#alternatives-considered"
+id="toc-alternatives-considered"><span
+class="toc-section-number">1.5</span> Alternatives Considered</a>
+<ul>
+<li><a href="#core-data" id="toc-core-data"><span
+class="toc-section-number">1.5.1</span> Core Data</a></li>
+<li><a href="#sqlite-fmdbsqlite.swift"
+id="toc-sqlite-fmdbsqlite.swift"><span
+class="toc-section-number">1.5.2</span> SQLite +
+FMDB/SQLite.swift</a></li>
+<li><a href="#realm" id="toc-realm"><span
+class="toc-section-number">1.5.3</span> Realm</a></li>
+<li><a href="#cloudkit-local-cache" id="toc-cloudkit-local-cache"><span
+class="toc-section-number">1.5.4</span> CloudKit + Local Cache</a></li>
+</ul></li>
+<li><a href="#trade-offs" id="toc-trade-offs"><span
+class="toc-section-number">1.6</span> Trade-offs</a>
+<ul>
+<li><a href="#accepted-trade-offs" id="toc-accepted-trade-offs"><span
+class="toc-section-number">1.6.1</span> Accepted Trade-offs</a></li>
+<li><a href="#mitigations" id="toc-mitigations"><span
+class="toc-section-number">1.6.2</span> Mitigations</a></li>
+</ul></li>
+<li><a href="#decision-record" id="toc-decision-record"><span
+class="toc-section-number">1.7</span> Decision Record</a>
+<ul>
+<li><a href="#key-requirements-met" id="toc-key-requirements-met"><span
+class="toc-section-number">1.7.1</span> Key Requirements Met</a></li>
+<li><a href="#architecture-integration"
+id="toc-architecture-integration"><span
+class="toc-section-number">1.7.2</span> Architecture
+Integration</a></li>
+<li><a href="#success-metrics" id="toc-success-metrics"><span
+class="toc-section-number">1.7.3</span> Success Metrics</a></li>
+</ul></li>
+<li><a href="#implementation-status"
+id="toc-implementation-status"><span
+class="toc-section-number">1.8</span> Implementation Status</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 data-number="1"
+id="adr-001-swiftdata-as-primary-storage-solution"><span
+class="header-section-number">1</span> ADR-001: SwiftData as Primary
+Storage Solution</h1>
+<p><strong>Status</strong>: Accepted <strong>Date</strong>: 2025-10-14
+<strong>Decision Makers</strong>: iOS Development Team</p>
+<h2 data-number="1.1" id="context"><span
+class="header-section-number">1.1</span> Context</h2>
+<p>WorkOut Log requires a local-first persistence layer for workout
+sessions, sets, exercises, and body metrics. The app needs to support
+complex relationships, offline functionality, and seamless integration
+with SwiftUI’s reactive patterns.</p>
+<h2 data-number="1.2" id="decision"><span
+class="header-section-number">1.2</span> Decision</h2>
+<p>We will use <strong>SwiftData</strong> as the primary storage
+solution for WorkOut Log.</p>
+<h2 data-number="1.3" id="rationale"><span
+class="header-section-number">1.3</span> Rationale</h2>
+<h3 data-number="1.3.1" id="why-swiftdata"><span
+class="header-section-number">1.3.1</span> Why SwiftData</h3>
+<ol type="1">
+<li><strong>Native SwiftUI Integration</strong>
+<ul>
+<li>First-class support for <code>@Observable</code> pattern (iOS
+17+)</li>
+<li>Automatic UI updates through <code>@Query</code> property
+wrapper</li>
+<li>Type-safe predicate syntax with
+<code>#Predicate&lt;Model&gt;</code></li>
+</ul></li>
+<li><strong>Schema Evolution Support</strong>
+<ul>
+<li>Built-in migration system with <code>VersionedSchema</code></li>
+<li>Explicit version control: v1 → v2 → v3</li>
+<li>Safe schema changes for production apps</li>
+</ul></li>
+<li><strong>Performance &amp; Relationships</strong>
+<ul>
+<li>Efficient relationship modeling with <code>@Relationship</code></li>
+<li>Lazy loading and relationship traversal</li>
+<li>Query optimization with <code>FetchDescriptor</code></li>
+</ul></li>
+<li><strong>Swift 6 Compatibility</strong>
+<ul>
+<li>Full strict concurrency support</li>
+<li><code>@MainActor</code> isolation for UI-bound operations</li>
+<li>Type-safe async/await persistence operations</li>
+</ul></li>
+</ol>
+<h2 data-number="1.4" id="implementation-approach"><span
+class="header-section-number">1.4</span> Implementation Approach</h2>
+<h3 data-number="1.4.1" id="schema-design"><span
+class="header-section-number">1.4.1</span> Schema Design</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// v1: Basic workout tracking</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">@Model</span> <span class="kw">final</span> <span class="kw">class</span> WorkoutSessionModel <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">id</span><span class="op">:</span> String</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">date</span><span class="op">:</span> Date</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">note</span><span class="op">:</span> String<span class="op">?</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Relationship</span><span class="op">(</span>deleteRule<span class="op">:</span> <span class="op">.</span>cascade<span class="op">)</span> <span class="kw">var</span> <span class="va">sets</span><span class="op">:</span> <span class="op">[</span>SetRecordModel<span class="op">]</span> <span class="op">=</span> <span class="op">[]</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">// v2: Exercise categories</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">@Model</span> <span class="kw">final</span> <span class="kw">class</span> ExerciseModel <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">categoryRaw</span><span class="op">:</span> String  <span class="co">// ExerciseCategory.rawValue</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">lastUsedDate</span><span class="op">:</span> Date<span class="op">?</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">// v3: Body metrics expansion</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">@Model</span> <span class="kw">final</span> <span class="kw">class</span> BodyMetricModel <span class="op">{</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">bodyWeight</span><span class="op">:</span> Double</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">bodyFatPercent</span><span class="op">:</span> Double<span class="op">?</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">muscleMass</span><span class="op">:</span> Double<span class="op">?</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="1.4.2" id="critical-swiftdata-patterns"><span
+class="header-section-number">1.4.2</span> Critical SwiftData
+Patterns</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ✅ CORRECT: Explicit generic predicates</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="va">predicate</span> <span class="op">=</span> #Predicate<span class="op">&lt;</span>WorkoutSessionModel<span class="op">&gt;</span> <span class="op">{</span> $<span class="fl">0.</span>date <span class="op">&gt;=</span> start <span class="op">}</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">// ✅ CORRECT: Property-based limits</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">descriptor</span> <span class="op">=</span> FetchDescriptor<span class="op">&lt;</span>WorkoutSessionModel<span class="op">&gt;(</span>predicate<span class="op">:</span> predicate<span class="op">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>descriptor<span class="op">.</span>fetchLimit <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">// ✅ CORRECT: Qualified sort descriptors</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="va">sort</span> <span class="op">=</span> <span class="op">[</span>SortDescriptor<span class="op">(</span>\WorkoutSessionModel<span class="op">.</span>date<span class="op">,</span> order<span class="op">:</span> <span class="op">.</span>reverse<span class="op">)]</span></span></code></pre></div>
+<h2 data-number="1.5" id="alternatives-considered"><span
+class="header-section-number">1.5</span> Alternatives Considered</h2>
+<h3 data-number="1.5.1" id="core-data"><span
+class="header-section-number">1.5.1</span> Core Data</h3>
+<p><strong>Pros</strong>: Mature, battle-tested, extensive documentation
+<strong>Cons</strong>: Complex setup, NSManagedObject overhead, poor
+SwiftUI integration, verbose relationship syntax
+<strong>Verdict</strong>: Rejected - legacy approach incompatible with
+modern SwiftUI patterns</p>
+<h3 data-number="1.5.2" id="sqlite-fmdbsqlite.swift"><span
+class="header-section-number">1.5.2</span> SQLite +
+FMDB/SQLite.swift</h3>
+<p><strong>Pros</strong>: Full SQL control, predictable performance,
+lightweight <strong>Cons</strong>: Manual relationship management, no
+automatic UI updates, verbose boilerplate <strong>Verdict</strong>:
+Rejected - excessive development overhead for relationship-heavy data
+model</p>
+<h3 data-number="1.5.3" id="realm"><span
+class="header-section-number">1.5.3</span> Realm</h3>
+<p><strong>Pros</strong>: Simple API, good relationship support,
+cross-platform <strong>Cons</strong>: Third-party dependency, threading
+constraints, licensing considerations <strong>Verdict</strong>: Rejected
+- prefer first-party solution for core persistence</p>
+<h3 data-number="1.5.4" id="cloudkit-local-cache"><span
+class="header-section-number">1.5.4</span> CloudKit + Local Cache</h3>
+<p><strong>Pros</strong>: Built-in sync, Apple ecosystem integration
+<strong>Cons</strong>: Network dependency, complex conflict resolution,
+limited offline support <strong>Verdict</strong>: Deferred - consider
+for Week 4 cloud sync feature</p>
+<h2 data-number="1.6" id="trade-offs"><span
+class="header-section-number">1.6</span> Trade-offs</h2>
+<h3 data-number="1.6.1" id="accepted-trade-offs"><span
+class="header-section-number">1.6.1</span> Accepted Trade-offs</h3>
+<ol type="1">
+<li><strong>iOS 17+ Requirement</strong>: SwiftData limits backward
+compatibility</li>
+<li><strong>Early Adopter Risk</strong>: Fewer community resources than
+Core Data</li>
+<li><strong>Apple Ecosystem Lock-in</strong>: Platform-specific
+solution</li>
+</ol>
+<h3 data-number="1.6.2" id="mitigations"><span
+class="header-section-number">1.6.2</span> Mitigations</h3>
+<ol type="1">
+<li><strong>Repository Pattern</strong>: Abstract SwiftData behind
+domain protocols</li>
+<li><strong>Domain Mappers</strong>: Clean conversion between SwiftData
+models and domain entities</li>
+<li><strong>Comprehensive Testing</strong>: Mock repositories for
+isolated unit tests</li>
+</ol>
+<h2 data-number="1.7" id="decision-record"><span
+class="header-section-number">1.7</span> Decision Record</h2>
+<h3 data-number="1.7.1" id="key-requirements-met"><span
+class="header-section-number">1.7.1</span> Key Requirements Met</h3>
+<ul>
+<li>✅ Local-first with offline support</li>
+<li>✅ Complex relationship modeling (sessions → sets → exercises)</li>
+<li>✅ Reactive UI updates through SwiftUI integration</li>
+<li>✅ Type-safe queries and schema evolution</li>
+<li>✅ Swift 6 strict concurrency compliance</li>
+</ul>
+<h3 data-number="1.7.2" id="architecture-integration"><span
+class="header-section-number">1.7.2</span> Architecture Integration</h3>
+<pre class="mermaid"><code>graph LR
+    UI[SwiftUI Views] --&gt; VM[ViewModels]
+    VM --&gt; UC[Use Cases]
+    UC --&gt; REPO[Repository Protocols]
+    REPO --&gt; IMPL[Repository Implementations]
+    IMPL --&gt; SD[SwiftData Models]
+    IMPL --&gt; MAP[Domain Mappers]</code></pre>
+<h3 data-number="1.7.3" id="success-metrics"><span
+class="header-section-number">1.7.3</span> Success Metrics</h3>
+<ul>
+<li><strong>Developer Experience</strong>: Reduced boilerplate compared
+to Core Data</li>
+<li><strong>Performance</strong>: Sub-100ms query times for typical
+workouts</li>
+<li><strong>Reliability</strong>: Zero data loss during schema
+migrations</li>
+<li><strong>Testability</strong>: 80%+ domain layer test coverage with
+mock repositories</li>
+</ul>
+<h2 data-number="1.8" id="implementation-status"><span
+class="header-section-number">1.8</span> Implementation Status</h2>
+<p><strong>Week 1</strong>: ✅ Complete - Basic SwiftData setup with
+WorkoutSession/SetRecord relationships - Repository pattern
+implementation - Domain mappers for clean separation</p>
+<p><strong>Week 2</strong>: 🚧 In Progress - Schema v2 migration for
+exercise categories - Body metrics schema v3 integration</p>
+<p><strong>Week 3</strong>: 📋 Planned - Performance optimization and
+indexing - Advanced query patterns for analytics features</p>
+<hr />
+<p><strong>Last Updated</strong>: 2025-10-14 <strong>Next
+Review</strong>: End of Week 2 implementation</p>
+</body>
+</html>

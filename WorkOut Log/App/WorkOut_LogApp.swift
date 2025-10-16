@@ -11,14 +11,19 @@ import SwiftData
 @main
 struct WorkOut_LogApp: App {
     @State private var container = AppContainer()
-    
-    var body: some Scene {
+    @State private var showSplash = true
 
+    var body: some Scene {
         WindowGroup {
-//            if ProcessInfo.processInfo.arguments.contains("-UITestMode") {
-//                SessionListView(vm: SessionListViewModel(container: container))
-//            }
-            SessionListView(vm: SessionListViewModel(container: container))
+            ZStack {
+                MainTabView(container: container)
+
+                if showSplash {
+                    SplashView(isPresented: $showSplash)
+                        .transition(.opacity)
+                        .zIndex(1)
+                }
+            }
         }
         .modelContainer(container.modelContainer)
     }

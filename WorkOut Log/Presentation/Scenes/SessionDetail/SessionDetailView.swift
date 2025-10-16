@@ -8,70 +8,138 @@
 import SwiftUI
 
 struct SessionDetailView: View {
-    let sessionID: String
-    @State private var exerciseID: String = "lat-pulldown" // 임시
-    @State private var weight: String = ""
-    @State private var reps: String = ""
-    @State private var sets: [SetRecord] = []
-    @State private var isLoading = false
-    @State private var errorMessage: String?
+    @State var vm: SessionDetailViewModel
+    @State private var showExercisePicker = false
     private let container: AppContainer
 
     init(sessionID: String, container: AppContainer) {
-        self.sessionID = sessionID
         self.container = container
+        self._vm = State(initialValue: SessionDetailViewModel(sessionID: sessionID, container: container))
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            if isLoading {
+            if vm.isLoading {
                 ProgressView("Loading...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
-                    if sets.isEmpty {
+                    if vm.exerciseGroups.isEmpty {
                         Text("No sets yet. Add your first set below!")
                             .foregroundStyle(.secondary)
                             .italic()
                     } else {
-                        ForEach(sets, id: \.id) { set in
-                            HStack {
-                                Text("#\(set.order + 1)")
+                        ForEach(vm.exerciseGroups) { group in
+                            Section {
+                                ForEach(Array(group.sets.enumerated()), id: \.element.id) { index, set in
+                                    HStack {
+                                        Text("#\(index + 1)")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Spacer()
+                                        Text("\(Int(set.weight))kg × \(set.reps) reps")
+                                            .font(.body.monospacedDigit())
+                                        Spacer()
+                                        Text("\(Int(set.volume))kg total")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .padding(.vertical, 2)
+                                    .accessibilityIdentifier("setRow_\(set.id)")
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button(role: .destructive) {
+                                            Task { await vm.deleteSet(setID: set.id) }
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                        .accessibilityIdentifier("deleteSet")
+                                    }
+                                }
+                            } header: {
+                                HStack(spacing: 8) {
+                                    Text(group.name)
+                                        .font(.headline)
+                                    Text(group.main.displayName)
+                                        .font(.caption2)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(categoryColor(group.main).opacity(0.2))
+                                        .foregroundStyle(categoryColor(group.main))
+                                        .cornerRadius(4)
+                                }
+                                .accessibilityIdentifier("exerciseSection_\(group.id)")
+                            } footer: {
+                                Text("Total: \(group.totalVolume)kg")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
-                                Spacer()
-                                Text("\(Int(set.weight))kg × \(set.reps) reps")
-                                    .font(.body.monospacedDigit())
-                                Spacer()
-                                Text("\(Int(set.volume))kg total")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .accessibilityIdentifier("exerciseSubtotal_\(group.id)")
                             }
-                            .padding(.vertical, 2)
                         }
                     }
                 }
 
                 // Add Set Section
                 VStack(spacing: 12) {
+                    // Selected exercise display
+                    if let exercise = vm.currentExercise {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                            Text("Current: \(exercise.name)")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                            Spacer()
+                            Text(exercise.main.displayName)
+                                .font(.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.blue.opacity(0.1))
+                                .foregroundStyle(.blue)
+                                .cornerRadius(8)
+                        }
+                        .padding()
+                        .background(Color.green.opacity(0.1))
+                        .cornerRadius(8)
+                        .accessibilityIdentifier("selectedExerciseLabel")
+                    }
+
+                    // Exercise selection button
+                    Button {
+                        showExercisePicker = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "dumbbell.fill")
+                            if vm.currentExercise == nil {
+                                Text("Select Exercise")
+                            } else {
+                                Text("Change Exercise")
+                            }
+                            Spacer()
+                        }
+                        .padding()
+                        .background(Color(.systemGray5))
+                        .cornerRadius(8)
+                    }
+                    .accessibilityIdentifier("openExercisePicker")
+
                     HStack(spacing: 12) {
-                        TextField("Weight (kg)", text: $weight)
+                        TextField("Weight (kg)", text: $vm.weight)
                             .keyboardType(.decimalPad)
                             .textFieldStyle(.roundedBorder)
 
-                        TextField("Reps", text: $reps)
+                        TextField("Reps", text: $vm.reps)
                             .keyboardType(.numberPad)
                             .textFieldStyle(.roundedBorder)
 
                         Button("Add Set") {
-                            Task { await addSetTapped() }
+                            Task { await vm.addSet() }
                         }
                         .accessibilityIdentifier("addSetButton")
                         .buttonStyle(.borderedProminent)
-                        .disabled(weight.isEmpty || reps.isEmpty || isLoading)
+                        .disabled(vm.currentExercise == nil || vm.weight.isEmpty || vm.reps.isEmpty || vm.isLoading)
                     }
 
-                    if let errorMessage = errorMessage {
+                    if let errorMessage = vm.errorMessage {
                         Text(errorMessage)
                             .foregroundStyle(.red)
                             .font(.caption)
@@ -83,43 +151,23 @@ struct SessionDetailView: View {
         }
         .navigationTitle("Session Detail")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await reload() }
+        .sheet(isPresented: $showExercisePicker) {
+            ExercisePickerView(
+                vm: ExercisePickerViewModel(container: container),
+                onSelect: { exercise in
+                    vm.currentExercise = exercise
+                }
+            )
+        }
+        .task { vm.onAppear() }
     }
 
-    private func addSetTapped() async {
-        guard let w = Double(weight), let r = Int(reps) else {
-            errorMessage = "Please enter valid weight and reps"
-            return
+    private func categoryColor(_ category: ExerciseCategoryMain) -> Color {
+        switch category {
+        case .lowerBody: return .blue
+        case .upperBody: return .orange
+        case .cardio: return .red
+        case .fullBody: return .purple
         }
-
-        isLoading = true
-        errorMessage = nil
-
-        do {
-            let order = sets.count
-            _ = try await container.addSet(sessionID: sessionID, exerciseID: exerciseID, weight: w, reps: r, order: order)
-            await reload()
-
-            // Clear inputs on success
-            weight = ""
-            reps = ""
-        } catch {
-            errorMessage = "Failed to add set: \(error.localizedDescription)"
-        }
-
-        isLoading = false
-    }
-
-    private func reload() async {
-        isLoading = true
-
-        do {
-            let fetchedSets = try await container.sessionRepo.fetchSets(sessionID: sessionID)
-            sets = fetchedSets
-        } catch {
-            errorMessage = "Failed to load sets: \(error.localizedDescription)"
-        }
-
-        isLoading = false
     }
 }

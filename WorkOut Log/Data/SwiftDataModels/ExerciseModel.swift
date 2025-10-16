@@ -11,19 +11,13 @@ import SwiftData
 @Model final class ExerciseModel {
     @Attribute(.unique) var id: String
     var name: String
-    var categoryRaw: String // v2: Stores ExerciseCategory.rawValue
+    var mainRaw: String // Stores ExerciseCategoryMain.rawValue
     var lastUsedDate: Date? // For recent exercises functionality
 
-    init(id: String, name: String, categoryRaw: String, lastUsedDate: Date? = nil) {
+    init(id: String, name: String, mainRaw: String, lastUsedDate: Date? = nil) {
         self.id = id
         self.name = name
-        self.categoryRaw = categoryRaw
+        self.mainRaw = mainRaw
         self.lastUsedDate = lastUsedDate
-    }
-
-    // Convenience computed property
-    var category: ExerciseCategory {
-        get { ExerciseCategory(rawValue: categoryRaw) ?? .fullBody }
-        set { categoryRaw = newValue.rawValue }
     }
 }

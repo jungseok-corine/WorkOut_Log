@@ -19,7 +19,7 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
         // Extract values to avoid macro capture
         let exerciseID = exercise.id
         let exerciseName = exercise.name
-        let exerciseCategory = exercise.category
+        let exerciseMainRaw = exercise.main.rawValue
 
         let existingPredicate = #Predicate<ExerciseModel> { model in
             model.id == exerciseID
@@ -30,7 +30,7 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
         if let existing = try context.fetch(descriptor).first {
             // Update existing
             existing.name = exerciseName
-            existing.category = exerciseCategory
+            existing.mainRaw = exerciseMainRaw
             existing.lastUsedDate = Date() // Update last used date
         } else {
             // Create new
@@ -40,6 +40,40 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
         }
 
         try context.save()
+    }
+
+    func delete(id: String) async throws {
+        // Check for referencing sets first
+        if try await hasReferencingSets(exerciseID: id) {
+            throw NSError(
+                domain: "ExerciseRepository",
+                code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "Cannot delete exercise with existing sets"]
+            )
+        }
+
+        let exerciseID = id
+        let predicate = #Predicate<ExerciseModel> { model in
+            model.id == exerciseID
+        }
+        var descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate)
+        descriptor.fetchLimit = 1
+
+        if let exercise = try context.fetch(descriptor).first {
+            context.delete(exercise)
+            try context.save()
+        }
+    }
+
+    func hasReferencingSets(exerciseID: String) async throws -> Bool {
+        let exID = exerciseID
+        let predicate = #Predicate<SetRecordModel> { model in
+            model.exerciseID == exID
+        }
+        var descriptor = FetchDescriptor<SetRecordModel>(predicate: predicate)
+        descriptor.fetchLimit = 1
+
+        return try !context.fetch(descriptor).isEmpty
     }
 
     func search(nameLike: String) async throws -> [Exercise] {
@@ -70,10 +104,10 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
         return try context.fetch(descriptor).map { $0.toDomain() }
     }
 
-    func fetchByCategory(_ category: ExerciseCategory) async throws -> [Exercise] {
-        let categoryRaw = category.rawValue
+    func fetchByMain(_ main: ExerciseCategoryMain) async throws -> [Exercise] {
+        let mainRaw = main.rawValue
         let predicate = #Predicate<ExerciseModel> { model in
-            model.categoryRaw == categoryRaw
+            model.mainRaw == mainRaw
         }
         let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
         let descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate, sortBy: sort)
