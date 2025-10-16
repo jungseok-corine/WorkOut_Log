@@ -1,0 +1,150 @@
+# App Store Privacy Nutrition Label — Data Collection Specification
+# Reference: https://developer.apple.com/app-store/app-privacy-details/
+
+app_name: WorkOut Log
+bundle_id: com.ojung.workout-log
+version: 1.0.0
+last_updated: 2025-10-16
+
+# Privacy Summary
+privacy_summary: |
+  WorkOut Log collects ZERO data. All workout data is stored locally on your device.
+  No internet required, no tracking, no third-party SDKs.
+
+# Data Collection Categories (ALL set to false)
+data_collection:
+  # Contact Info
+  contact_info:
+    name: false
+    email_address: false
+    phone_number: false
+    physical_address: false
+    other_contact_info: false
+
+  # Health & Fitness
+  health_fitness:
+    health: false
+    fitness: false  # Even though we track workouts, data never leaves device
+
+  # Financial Info
+  financial_info:
+    payment_info: false
+    credit_info: false
+    other_financial_info: false
+
+  # Location
+  location:
+    precise_location: false
+    coarse_location: false
+
+  # Sensitive Info
+  sensitive_info:
+    sensitive_info: false  # No racial/ethnic data, sexual orientation, pregnancy, etc.
+
+  # Contacts
+  contacts:
+    contacts: false
+
+  # User Content
+  user_content:
+    emails_or_text_messages: false
+    photos_or_videos: false
+    audio_data: false
+    gameplay_content: false
+    customer_support: false
+    other_user_content: false  # Workout data stored locally only
+
+  # Browsing History
+  browsing_history:
+    browsing_history: false
+
+  # Search History
+  search_history:
+    search_history: false
+
+  # Identifiers
+  identifiers:
+    user_id: false
+    device_id: false
+    advertising_identifier: false  # No IDFA
+
+  # Purchases
+  purchases:
+    purchase_history: false
+
+  # Usage Data
+  usage_data:
+    product_interaction: false
+    advertising_data: false
+    other_usage_data: false
+
+  # Diagnostics
+  diagnostics:
+    crash_data: false
+    performance_data: false
+    other_diagnostic_data: false
+
+  # Other Data
+  other_data:
+    other_data_types: false
+
+# Data Usage Purposes (N/A since we collect nothing)
+data_usage_purposes: []
+
+# Data Linked to User (N/A)
+data_linked_to_user: []
+
+# Data Used to Track User (N/A)
+data_used_to_track: []
+
+# Third-Party Data Collection (NONE)
+third_party_sdks: []
+
+# App Store Connect Form Mapping
+app_store_connect:
+  question_1:
+    q: "Does this app collect data from this app?"
+    a: "No"
+
+  question_2:
+    q: "Do you or your third-party partners collect data from this app?"
+    a: "No"
+
+# Future Considerations (if features are added)
+future_features:
+  icloud_sync:
+    enabled: false
+    note: "If enabled, user must opt-in. Data would be synced via iCloud (Apple's service), not our servers."
+    data_usage: "App Functionality"
+    data_linked: false  # iCloud data is encrypted and inaccessible to us
+
+  crash_reporting:
+    enabled: false
+    note: "If enabled, would use Apple's native crash reporting (no third-party SDK)."
+    data_usage: "App Functionality"
+    data_linked: false
+
+  export_csv:
+    enabled: false
+    note: "If enabled, user exports data to local Files app. No upload to servers."
+    data_usage: "N/A (local export only)"
+
+# Compliance Notes
+compliance:
+  gdpr: "Compliant by design — zero data collection"
+  ccpa: "No personal information sold or shared"
+  coppa: "Safe for children — no data collection from any age group"
+  hipaa: "Not applicable — no health data transmitted or stored on servers"
+
+# Verification
+verification:
+  network_requests: "Zero network requests verified via code review"
+  third_party_sdks: "Zero third-party SDKs — all native Apple frameworks"
+  data_storage: "All data stored locally via SwiftData (Apple framework)"
+  encryption: "iOS-level encryption when device passcode enabled"
+
+# Contact
+contact:
+  developer: "오정석 (Oh Jeongseok)"
+  email: "your-email@example.com"
+  privacy_url: "https://github.com/ojung/workout-log/privacy"

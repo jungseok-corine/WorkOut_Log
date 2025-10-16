@@ -12,14 +12,12 @@ import SwiftData
     @Attribute(.unique) var id: String
     var name: String
     var mainRaw: String // Stores ExerciseCategoryMain.rawValue
-    var upperRaw: String? // Stores ExerciseCategoryUpper.rawValue (optional)
     var lastUsedDate: Date? // For recent exercises functionality
 
-    init(id: String, name: String, mainRaw: String, upperRaw: String? = nil, lastUsedDate: Date? = nil) {
+    init(id: String, name: String, mainRaw: String, lastUsedDate: Date? = nil) {
         self.id = id
         self.name = name
         self.mainRaw = mainRaw
-        self.upperRaw = upperRaw
         self.lastUsedDate = lastUsedDate
     }
 }

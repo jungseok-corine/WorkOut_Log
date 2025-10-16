@@ -28,6 +28,7 @@ final class AppContainer {
 
     // Exercise UseCases
     let upsertExercise: UpsertExerciseUseCase
+    let deleteExercise: DeleteExerciseUseCase
     let searchExercises: SearchExercisesUseCase
     let recentExercises: RecentExercisesUseCase
 
@@ -59,6 +60,7 @@ final class AppContainer {
 
         // Initialize exercise use cases
         self.upsertExercise = UpsertExerciseUseCase(repo: exerciseRepo)
+        self.deleteExercise = DeleteExerciseUseCase(repo: exerciseRepo)
         self.searchExercises = SearchExercisesUseCase(repo: exerciseRepo)
         self.recentExercises = RecentExercisesUseCase(repo: exerciseRepo)
 

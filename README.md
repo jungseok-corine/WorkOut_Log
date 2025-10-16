@@ -2,6 +2,8 @@
 
 A modern workout tracking app built with SwiftUI, SwiftData, and Clean Architecture for iOS 18+.
 
+**🚀 [App Store Submission Guide](Docs/README-AppStore.md)** | **📦 [Metadata & Assets](/AppStore)** | **📸 [Screenshots](/AppStore/screenshots)**
+
 ## Features
 
 ### Week 1 (CRUD Essentials) ✅
@@ -174,4 +176,61 @@ cd Docs && ./export.sh
 
 ---
 
-**Current Status**: Week 1 foundations complete + Week 2 domain layer + comprehensive documentation. Ready for UI implementation and analytics features.
+## 📱 App Store Submission
+
+**Ready for submission!** All metadata, screenshots, and documentation prepared.
+
+### Quick Start
+
+```bash
+# 1. Build and test
+xcodebuild -scheme workout_log -destination 'platform=iOS Simulator,name=iPhone 16' clean build test
+
+# 2. Capture screenshots
+bash Scripts/capture_screenshots.sh
+
+# 3. Export submission package
+bash Scripts/export_appstore_zip.sh
+
+# Output: AppStore/WorkoutLog_AppStorePack.zip
+```
+
+### Directory Structure
+
+```
+AppStore/
+├── SubmissionChecklist.md   # Step-by-step guide
+├── PrivacyPolicy.md          # Zero data collection policy
+├── ReviewNotes.md            # For App Review team
+├── Keywords.en-US.txt        # English keywords
+├── Keywords.ko-KR.txt        # Korean keywords
+├── Description.en-US.md      # Full English description
+├── Description.ko-KR.md      # Full Korean description
+└── screenshots/              # Light + Dark mode (12 images)
+    ├── iPhone-6.7/
+    │   ├── light/ (6 images)
+    │   └── dark/  (6 images)
+```
+
+**See [Docs/README-AppStore.md](Docs/README-AppStore.md) for complete submission workflow.**
+
+---
+
+## 🔒 Privacy & Offline
+
+- **100% Offline:** No internet required, no cloud sync
+- **Zero Data Collection:** No analytics, no tracking, no third-party SDKs
+- **On-device storage only:** All data stays on your iPhone via SwiftData
+- **Open Source:** [View code on GitHub](https://github.com/ojung/workout-log)
+
+---
+
+## 📧 Contact & Support
+
+**Developer:** 오정석 (Oh Jeongseok)
+**Email:** your-email@example.com
+**GitHub Issues:** https://github.com/ojung/workout-log/issues
+
+---
+
+**Current Status**: Version 1.0.0 complete — Ready for App Store submission with full EN + KO metadata.

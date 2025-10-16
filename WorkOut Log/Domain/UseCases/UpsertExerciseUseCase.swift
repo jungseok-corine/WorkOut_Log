@@ -14,12 +14,11 @@ public struct UpsertExerciseUseCase {
         self.repo = repo
     }
 
-    public func callAsFunction(name: String, main: ExerciseCategoryMain, upper: ExerciseCategoryUpper? = nil) async throws -> Exercise {
+    public func callAsFunction(name: String, main: ExerciseCategoryMain) async throws -> Exercise {
         let exercise = Exercise(
             id: UUID().uuidString,
             name: name.trimmingCharacters(in: .whitespacesAndNewlines),
-            main: main,
-            upper: upper
+            main: main
         )
         try await repo.upsert(exercise)
         return exercise

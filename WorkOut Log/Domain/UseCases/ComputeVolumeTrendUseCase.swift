@@ -8,6 +8,7 @@
 import Foundation
 
 public enum TrendScope {
+    case daily
     case weekly
     case monthly
 }
@@ -34,12 +35,20 @@ public struct ComputeVolumeTrendUseCase {
         self.exerciseRepo = exerciseRepo
     }
 
-    public func callAsFunction(scope: TrendScope, categoryFilter: ExerciseCategoryMain? = nil) async throws -> [VolumeTrendPoint] {
+    public func callAsFunction(
+        scope: TrendScope,
+        categoryFilter: ExerciseCategoryMain? = nil,
+        includeZeroDays: Bool = false
+    ) async throws -> [VolumeTrendPoint] {
         let calendar = Calendar(identifier: .iso8601)
         let now = Date()
 
         // Determine date range and periods
-        let (startDate, periods) = calculatePeriods(scope: scope, calendar: calendar, now: now)
+        let (startDate, periods) = calculatePeriods(
+            scope: scope,
+            calendar: calendar,
+            now: now
+        )
 
         // Fetch all sessions in range
         let endDate = calendar.date(byAdding: .day, value: 1, to: now)!
@@ -66,21 +75,60 @@ public struct ComputeVolumeTrendUseCase {
             }
         }
 
-        // Generate trend points for all periods (including zeros)
+        // Generate trend points
         let formatter = DateFormatter()
-        formatter.dateFormat = scope == .weekly ? "MMM dd" : "MMM"
+        formatter.dateFormat = scope == .daily ? "MMM d" : (scope == .weekly ? "MMM dd" : "MMM")
 
-        return periods.map { periodStart in
-            VolumeTrendPoint(
-                date: periodStart,
-                volume: volumeByPeriod[periodStart] ?? 0,
-                periodLabel: formatter.string(from: periodStart)
-            )
+        // Generate points based on scope
+        let allPoints: [VolumeTrendPoint]
+
+        if scope == .daily && !includeZeroDays {
+            // Only return days with actual volume
+            allPoints = volumeByPeriod.keys.sorted().map { periodStart in
+                VolumeTrendPoint(
+                    date: periodStart,
+                    volume: volumeByPeriod[periodStart] ?? 0,
+                    periodLabel: formatter.string(from: periodStart)
+                )
+            }
+        } else {
+            // Return all periods (including zeros for weekly/monthly or when includeZeroDays is true)
+            allPoints = periods.map { periodStart in
+                VolumeTrendPoint(
+                    date: periodStart,
+                    volume: volumeByPeriod[periodStart] ?? 0,
+                    periodLabel: formatter.string(from: periodStart)
+                )
+            }
+        }
+
+        // For daily scope: cap to latest 10 points
+        if scope == .daily {
+            return Array(allPoints.suffix(10))
+        } else {
+            return allPoints
         }
     }
 
-    private func calculatePeriods(scope: TrendScope, calendar: Calendar, now: Date) -> (Date, [Date]) {
+    private func calculatePeriods(
+        scope: TrendScope,
+        calendar: Calendar,
+        now: Date
+    ) -> (Date, [Date]) {
         switch scope {
+        case .daily:
+            // Last 30 days (will be capped to 10 by caller)
+            let startOfToday = calendar.startOfDay(for: now)
+            let startDate = calendar.date(byAdding: .day, value: -29, to: startOfToday)!
+
+            var periods: [Date] = []
+            for i in 0..<30 {
+                if let dayStart = calendar.date(byAdding: .day, value: i, to: startDate) {
+                    periods.append(dayStart)
+                }
+            }
+            return (startDate, periods)
+
         case .weekly:
             // Last 8 weeks
             let startOfThisWeek = calendar.dateInterval(of: .weekOfYear, for: now)!.start
@@ -111,6 +159,8 @@ public struct ComputeVolumeTrendUseCase {
 
     private func getPeriodStart(for date: Date, scope: TrendScope, calendar: Calendar) -> Date {
         switch scope {
+        case .daily:
+            return calendar.startOfDay(for: date)
         case .weekly:
             return calendar.dateInterval(of: .weekOfYear, for: date)!.start
         case .monthly:

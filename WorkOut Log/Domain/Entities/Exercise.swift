@@ -22,43 +22,14 @@ public enum ExerciseCategoryMain: String, Sendable, CaseIterable, Codable {
     }
 }
 
-// Upper body subcategory (소분류 - only for upperBody)
-public enum ExerciseCategoryUpper: String, Sendable, CaseIterable, Codable {
-    case chest
-    case back
-    case biceps
-    case triceps
-    case trapezius
-
-    public var displayName: String {
-        switch self {
-        case .chest: return "Chest"
-        case .back: return "Back"
-        case .biceps: return "Biceps"
-        case .triceps: return "Triceps"
-        case .trapezius: return "Trapezius"
-        }
-    }
-}
-
 public struct Exercise: Sendable, Equatable, Identifiable {
     public let id: String
     public var name: String
     public var main: ExerciseCategoryMain
-    public var upper: ExerciseCategoryUpper?
 
-    public init(id: String, name: String, main: ExerciseCategoryMain, upper: ExerciseCategoryUpper? = nil) {
+    public init(id: String, name: String, main: ExerciseCategoryMain) {
         self.id = id
         self.name = name
         self.main = main
-        self.upper = upper
-    }
-
-    // Validation: upperBody must have upper subcategory
-    public var isValid: Bool {
-        if main == .upperBody {
-            return upper != nil
-        }
-        return upper == nil
     }
 }

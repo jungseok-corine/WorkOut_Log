@@ -63,7 +63,6 @@
 				Tests/DomainTests/SessionListVolumeTests.swift,
 				Tests/DomainTests/SetCRUDTests.swift,
 				Tests/DomainTests/VolumeTrendTests.swift,
-				"WorkOut-Log-Info.plist",
 			);
 			target = 99DC4DB62E9E2850006B8C3F /* WorkOut Log */;
 		};

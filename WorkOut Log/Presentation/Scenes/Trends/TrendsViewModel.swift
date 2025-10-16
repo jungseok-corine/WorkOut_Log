@@ -12,6 +12,7 @@ import Observation
 final class TrendsViewModel {
     var scope: TrendScope = .weekly
     var selectedCategory: ExerciseCategoryMain?
+    var showAllDays: Bool = false // Only relevant for daily scope
     var trendData: [VolumeTrendPoint] = []
     var isLoading = false
 
@@ -30,7 +31,12 @@ final class TrendsViewModel {
     func refresh() async {
         isLoading = true
         do {
-            trendData = try await container.computeVolumeTrend(scope: scope, categoryFilter: selectedCategory)
+            let includeZeroDays = scope == .daily ? showAllDays : false
+            trendData = try await container.computeVolumeTrend(
+                scope: scope,
+                categoryFilter: selectedCategory,
+                includeZeroDays: includeZeroDays
+            )
         } catch {
             print("Failed to load trend: \(error)")
             trendData = []
@@ -45,6 +51,12 @@ final class TrendsViewModel {
     }
 
     func categoryFilterChanged() {
+        Task {
+            await refresh()
+        }
+    }
+
+    func showAllDaysToggled() {
         Task {
             await refresh()
         }

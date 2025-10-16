@@ -1,0 +1,15 @@
+Version 1.0.0 — Initial Release
+
+Welcome to WorkOut Log! Track your workouts with complete privacy.
+
+New Features:
+• Session & set tracking with automatic volume calculation
+• Custom exercise library with 4 categories (Lower/Upper/Cardio/Full)
+• Workout log with category badges and exercise grouping
+• Trends visualization (Daily/Weekly/Monthly)
+• Daily motivational quotes on app launch
+• 100% offline — no accounts, no cloud, no tracking
+
+Built with Swift 6 + SwiftUI + SwiftData for iOS 18.
+
+Questions? Email your-email@example.com

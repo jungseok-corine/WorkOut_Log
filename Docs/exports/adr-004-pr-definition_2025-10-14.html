@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>ADR-004-pr-definition</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="github.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">ADR-004-pr-definition</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#adr-004-personal-record-definition-and-calculation-method"
+id="toc-adr-004-personal-record-definition-and-calculation-method"><span
+class="toc-section-number">1</span> ADR-004: Personal Record Definition
+and Calculation Method</a>
+<ul>
+<li><a href="#context" id="toc-context"><span
+class="toc-section-number">1.1</span> Context</a></li>
+<li><a href="#decision" id="toc-decision"><span
+class="toc-section-number">1.2</span> Decision</a></li>
+<li><a href="#primary-pr-definition"
+id="toc-primary-pr-definition"><span
+class="toc-section-number">1.3</span> Primary PR Definition</a>
+<ul>
+<li><a href="#maximum-weight-approach"
+id="toc-maximum-weight-approach"><span
+class="toc-section-number">1.3.1</span> Maximum Weight Approach</a></li>
+<li><a href="#rationale-for-max-weight-priority"
+id="toc-rationale-for-max-weight-priority"><span
+class="toc-section-number">1.3.2</span> Rationale for Max Weight
+Priority</a></li>
+</ul></li>
+<li><a href="#rm-estimation-for-pr-comparison"
+id="toc-rm-estimation-for-pr-comparison"><span
+class="toc-section-number">1.4</span> 1RM Estimation for PR
+Comparison</a>
+<ul>
+<li><a href="#epley-formula-implementation"
+id="toc-epley-formula-implementation"><span
+class="toc-section-number">1.4.1</span> Epley Formula
+Implementation</a></li>
+<li><a href="#implementation" id="toc-implementation"><span
+class="toc-section-number">1.4.2</span> Implementation</a></li>
+<li><a href="#pr-detection-logic" id="toc-pr-detection-logic"><span
+class="toc-section-number">1.4.3</span> PR Detection Logic</a></li>
+</ul></li>
+<li><a href="#alternatives-considered"
+id="toc-alternatives-considered"><span
+class="toc-section-number">1.5</span> Alternatives Considered</a>
+<ul>
+<li><a href="#volume-based-pr-weight-reps"
+id="toc-volume-based-pr-weight-reps"><span
+class="toc-section-number">1.5.1</span> Volume-Based PR (Weight ×
+Reps)</a></li>
+<li><a href="#multiple-pr-categories"
+id="toc-multiple-pr-categories"><span
+class="toc-section-number">1.5.2</span> Multiple PR Categories</a></li>
+<li><a href="#user-configurable-pr-definition"
+id="toc-user-configurable-pr-definition"><span
+class="toc-section-number">1.5.3</span> User-Configurable PR
+Definition</a></li>
+<li><a href="#wilks-score-or-relative-strength"
+id="toc-wilks-score-or-relative-strength"><span
+class="toc-section-number">1.5.4</span> Wilks Score or Relative
+Strength</a></li>
+<li><a href="#time-based-prs-recent-vs-all-time"
+id="toc-time-based-prs-recent-vs-all-time"><span
+class="toc-section-number">1.5.5</span> Time-Based PRs (Recent vs
+All-Time)</a></li>
+</ul></li>
+<li><a href="#epley-formula-justification"
+id="toc-epley-formula-justification"><span
+class="toc-section-number">1.6</span> Epley Formula Justification</a>
+<ul>
+<li><a href="#why-epley-over-alternatives"
+id="toc-why-epley-over-alternatives"><span
+class="toc-section-number">1.6.1</span> Why Epley Over
+Alternatives</a></li>
+<li><a href="#alternative-formulas-considered"
+id="toc-alternative-formulas-considered"><span
+class="toc-section-number">1.6.2</span> Alternative Formulas
+Considered</a></li>
+<li><a href="#epley-formula-validation"
+id="toc-epley-formula-validation"><span
+class="toc-section-number">1.6.3</span> Epley Formula
+Validation</a></li>
+</ul></li>
+<li><a href="#trade-offs" id="toc-trade-offs"><span
+class="toc-section-number">1.7</span> Trade-offs</a>
+<ul>
+<li><a href="#accepted-trade-offs" id="toc-accepted-trade-offs"><span
+class="toc-section-number">1.7.1</span> Accepted Trade-offs</a></li>
+<li><a href="#mitigations" id="toc-mitigations"><span
+class="toc-section-number">1.7.2</span> Mitigations</a></li>
+<li><a href="#benefits-gained" id="toc-benefits-gained"><span
+class="toc-section-number">1.7.3</span> Benefits Gained</a></li>
+</ul></li>
+<li><a href="#ui-implementation" id="toc-ui-implementation"><span
+class="toc-section-number">1.8</span> UI Implementation</a>
+<ul>
+<li><a href="#pr-display" id="toc-pr-display"><span
+class="toc-section-number">1.8.1</span> PR Display</a></li>
+<li><a href="#new-pr-celebration" id="toc-new-pr-celebration"><span
+class="toc-section-number">1.8.2</span> New PR Celebration</a></li>
+</ul></li>
+<li><a href="#data-model-integration"
+id="toc-data-model-integration"><span
+class="toc-section-number">1.9</span> Data Model Integration</a>
+<ul>
+<li><a href="#repository-methods" id="toc-repository-methods"><span
+class="toc-section-number">1.9.1</span> Repository Methods</a></li>
+<li><a href="#analytics-integration"
+id="toc-analytics-integration"><span
+class="toc-section-number">1.9.2</span> Analytics Integration</a></li>
+</ul></li>
+<li><a href="#success-metrics" id="toc-success-metrics"><span
+class="toc-section-number">1.10</span> Success Metrics</a>
+<ul>
+<li><a href="#user-engagement" id="toc-user-engagement"><span
+class="toc-section-number">1.10.1</span> User Engagement</a></li>
+<li><a href="#data-quality" id="toc-data-quality"><span
+class="toc-section-number">1.10.2</span> Data Quality</a></li>
+</ul></li>
+<li><a href="#implementation-status"
+id="toc-implementation-status"><span
+class="toc-section-number">1.11</span> Implementation Status</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 data-number="1"
+id="adr-004-personal-record-definition-and-calculation-method"><span
+class="header-section-number">1</span> ADR-004: Personal Record
+Definition and Calculation Method</h1>
+<p><strong>Status</strong>: Accepted <strong>Date</strong>: 2025-10-14
+<strong>Decision Makers</strong>: iOS Development Team</p>
+<h2 data-number="1.1" id="context"><span
+class="header-section-number">1.1</span> Context</h2>
+<p>WorkOut Log’s Week 2 features include Personal Record (PR) tracking
+for strength progression analysis. The app needs a consistent definition
+of what constitutes a “personal record” and how to compare different
+weight/rep combinations for the same exercise. Multiple approaches exist
+for defining and calculating PRs, each with different implications for
+user motivation and accuracy.</p>
+<h2 data-number="1.2" id="decision"><span
+class="header-section-number">1.2</span> Decision</h2>
+<p>We will define <strong>Personal Records (PRs) as maximum weight
+lifted</strong> for any given exercise, with <strong>Epley Formula
+estimation for 1RM comparisons</strong> when determining new PRs across
+different rep ranges.</p>
+<h2 data-number="1.3" id="primary-pr-definition"><span
+class="header-section-number">1.3</span> Primary PR Definition</h2>
+<h3 data-number="1.3.1" id="maximum-weight-approach"><span
+class="header-section-number">1.3.1</span> Maximum Weight Approach</h3>
+<p>A Personal Record is the <strong>highest weight successfully
+lifted</strong> for a given exercise, regardless of repetition
+count.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">struct</span> PersonalRecord<span class="op">:</span> <span class="dt">Sendable</span><span class="op">,</span> <span class="dt">Equatable</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">let</span> <span class="va">exerciseID</span><span class="op">:</span> String</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">let</span> <span class="va">maxWeight</span><span class="op">:</span> Double        <span class="co">// Primary PR metric</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">let</span> <span class="va">repsAtMaxWeight</span><span class="op">:</span> Int     <span class="co">// Context for the max weight</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">let</span> <span class="va">estimatedOneRM</span><span class="op">:</span> Double   <span class="co">// Epley formula calculation</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">let</span> <span class="va">achievedDate</span><span class="op">:</span> Date       <span class="co">// When the PR was set</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="1.3.2" id="rationale-for-max-weight-priority"><span
+class="header-section-number">1.3.2</span> Rationale for Max Weight
+Priority</h3>
+<ol type="1">
+<li><strong>Simplicity</strong>: Clear, unambiguous metric that users
+understand immediately</li>
+<li><strong>Motivation</strong>: Visible progress even when working in
+different rep ranges</li>
+<li><strong>Practicality</strong>: Aligns with common gym culture and
+strength training goals</li>
+<li><strong>Data Integrity</strong>: Objective measurement without
+complex calculations</li>
+</ol>
+<h2 data-number="1.4" id="rm-estimation-for-pr-comparison"><span
+class="header-section-number">1.4</span> 1RM Estimation for PR
+Comparison</h2>
+<h3 data-number="1.4.1" id="epley-formula-implementation"><span
+class="header-section-number">1.4.1</span> Epley Formula
+Implementation</h3>
+<p>When determining if a new set qualifies as a PR, we use the Epley
+formula to compare estimated 1RM values:</p>
+<pre><code>Estimated 1RM = Weight × (1 + Reps ÷ 30)</code></pre>
+<h3 data-number="1.4.2" id="implementation"><span
+class="header-section-number">1.4.2</span> Implementation</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extension</span> ComputePRUseCase <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">func</span> <span class="fu">isNewPR</span><span class="op">(</span><span class="va">exerciseID</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">weight</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="va">reps</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="fu">async</span> <span class="kw">throws</span> -&gt; <span class="fu">Bool</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">guard</span> <span class="kw">let</span> <span class="va">currentPR</span> <span class="op">=</span> <span class="cf">try</span> <span class="cf">await</span> <span class="kw">self</span><span class="op">(</span>exerciseID<span class="op">:</span> exerciseID<span class="op">)</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">true</span> <span class="co">// First time doing this exercise</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Check if higher weight (primary criterion)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> weight <span class="op">&gt;</span> currentPR<span class="op">.</span>maxWeight <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// If same or lower weight, check estimated 1RM</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="va">newEstimated1RM</span> <span class="op">=</span> weight <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> Double<span class="op">(</span>reps<span class="op">)</span> <span class="op">/</span> <span class="fl">30.0</span><span class="op">)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> newEstimated1RM <span class="op">&gt;</span> currentPR<span class="op">.</span>estimatedOneRM</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">func</span> <span class="fu">calculate1RM</span><span class="op">(</span><span class="va">weight</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="va">reps</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> -&gt; <span class="fu">Double</span> <span class="op">{</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> weight <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> Double<span class="op">(</span>reps<span class="op">)</span> <span class="op">/</span> <span class="fl">30.0</span><span class="op">)</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="1.4.3" id="pr-detection-logic"><span
+class="header-section-number">1.4.3</span> PR Detection Logic</h3>
+<ol type="1">
+<li><strong>New Weight PR</strong>: Any weight higher than previous
+maximum</li>
+<li><strong>New 1RM PR</strong>: Higher estimated 1RM using Epley
+formula</li>
+<li><strong>First Exercise</strong>: Any first successful set counts as
+initial PR</li>
+</ol>
+<h2 data-number="1.5" id="alternatives-considered"><span
+class="header-section-number">1.5</span> Alternatives Considered</h2>
+<h3 data-number="1.5.1" id="volume-based-pr-weight-reps"><span
+class="header-section-number">1.5.1</span> Volume-Based PR (Weight ×
+Reps)</h3>
+<p><strong>Pros</strong>: Rewards high-volume work, simple calculation
+<strong>Cons</strong>: Misleading comparisons (100kg×1 vs 50kg×10),
+doesn’t reflect strength gains <strong>Example</strong>: 80kg × 10 reps
+= 800 volume vs 120kg × 5 reps = 600 volume <strong>Verdict</strong>:
+Rejected - volume and strength are different metrics</p>
+<h3 data-number="1.5.2" id="multiple-pr-categories"><span
+class="header-section-number">1.5.2</span> Multiple PR Categories</h3>
+<p><strong>Pros</strong>: Comprehensive tracking (1RM, 3RM, 5RM, 10RM
+PRs), appeals to powerlifters <strong>Cons</strong>: Complex UI,
+overwhelming for casual users, data fragmentation <strong>Implementation
+Complexity</strong>: High - requires separate tracking for each rep
+range <strong>Verdict</strong>: Rejected - over-engineering for general
+fitness app</p>
+<h3 data-number="1.5.3" id="user-configurable-pr-definition"><span
+class="header-section-number">1.5.3</span> User-Configurable PR
+Definition</h3>
+<p><strong>Pros</strong>: Accommodates different training philosophies
+and user preferences <strong>Cons</strong>: Complex implementation,
+inconsistent data across users, poor UX <strong>Data
+Implications</strong>: Difficult aggregation and comparison features
+<strong>Verdict</strong>: Rejected - complexity outweighs flexibility
+benefits</p>
+<h3 data-number="1.5.4" id="wilks-score-or-relative-strength"><span
+class="header-section-number">1.5.4</span> Wilks Score or Relative
+Strength</h3>
+<p><strong>Pros</strong>: Accounts for bodyweight differences,
+competitive powerlifting alignment <strong>Cons</strong>: Requires body
+weight tracking, complex calculation, not intuitive for casual users
+<strong>Prerequisites</strong>: Body weight data for every PR
+calculation <strong>Verdict</strong>: Deferred - consider for advanced
+analytics features</p>
+<h3 data-number="1.5.5" id="time-based-prs-recent-vs-all-time"><span
+class="header-section-number">1.5.5</span> Time-Based PRs (Recent vs
+All-Time)</h3>
+<p><strong>Pros</strong>: Shows recent progress, motivating for comeback
+scenarios <strong>Cons</strong>: Confusing definitions, requires time
+period selection, data complexity <strong>UX Impact</strong>: “What’s my
+PR?” becomes ambiguous question <strong>Verdict</strong>: Deferred -
+consider as filtered view, not primary definition</p>
+<h2 data-number="1.6" id="epley-formula-justification"><span
+class="header-section-number">1.6</span> Epley Formula
+Justification</h2>
+<h3 data-number="1.6.1" id="why-epley-over-alternatives"><span
+class="header-section-number">1.6.1</span> Why Epley Over
+Alternatives</h3>
+<ol type="1">
+<li><strong>Accuracy</strong>: Research-validated for 1RM estimation in
+1-10 rep range</li>
+<li><strong>Simplicity</strong>: Linear formula easy to compute and
+understand</li>
+<li><strong>Conservative</strong>: Tends to underestimate rather than
+overestimate</li>
+<li><strong>Industry Standard</strong>: Widely used in fitness apps and
+strength training</li>
+</ol>
+<h3 data-number="1.6.2" id="alternative-formulas-considered"><span
+class="header-section-number">1.6.2</span> Alternative Formulas
+Considered</h3>
+<p><strong>Brzycki Formula</strong>:
+<code>1RM = Weight ÷ (1.0278 - 0.0278 × Reps)</code> - More complex
+calculation - Similar accuracy to Epley - Less commonly recognized</p>
+<p><strong>Lombardi Formula</strong>:
+<code>1RM = Weight × Reps^0.10</code> - Requires exponential calculation
+- Good for higher rep ranges - Computationally more expensive</p>
+<h3 data-number="1.6.3" id="epley-formula-validation"><span
+class="header-section-number">1.6.3</span> Epley Formula Validation</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="fu">test_epleyFormula_accuracy</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">testCases</span><span class="op">:</span> <span class="op">[(</span>weight<span class="op">:</span> Double<span class="op">,</span> reps<span class="op">:</span> Int<span class="op">,</span> expected1RM<span class="op">:</span> Double<span class="op">)]</span> <span class="op">=</span> <span class="op">[</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="dv">100</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="fl">103.33</span><span class="op">),</span>    <span class="co">// 100 * (1 + 1/30) = 103.33</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="dv">90</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="fl">105.0</span><span class="op">),</span>      <span class="co">// 90 * (1 + 5/30) = 105.0</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="dv">80</span><span class="op">,</span> <span class="dv">10</span><span class="op">,</span> <span class="fl">106.67</span><span class="op">),</span>    <span class="co">// 80 * (1 + 10/30) = 106.67</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="dv">70</span><span class="op">,</span> <span class="dv">15</span><span class="op">,</span> <span class="fl">105.0</span><span class="op">)</span>      <span class="co">// 70 * (1 + 15/30) = 105.0</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">]</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> testCase <span class="cf">in</span> testCases <span class="op">{</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="va">calculated</span> <span class="op">=</span> testCase<span class="op">.</span>weight <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> Double<span class="op">(</span>testCase<span class="op">.</span>reps<span class="op">)</span> <span class="op">/</span> <span class="fl">30.0</span><span class="op">)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        XCTAssertEqual<span class="op">(</span>calculated<span class="op">,</span> testCase<span class="op">.</span>expected1RM<span class="op">,</span> accuracy<span class="op">:</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="1.7" id="trade-offs"><span
+class="header-section-number">1.7</span> Trade-offs</h2>
+<h3 data-number="1.7.1" id="accepted-trade-offs"><span
+class="header-section-number">1.7.1</span> Accepted Trade-offs</h3>
+<ol type="1">
+<li><strong>Rep Range Bias</strong>: Favors strength over endurance
+achievements</li>
+<li><strong>Formula Limitations</strong>: Epley accuracy decreases above
+15 reps</li>
+<li><strong>Context Loss</strong>: Max weight PR doesn’t show full
+training context</li>
+</ol>
+<h3 data-number="1.7.2" id="mitigations"><span
+class="header-section-number">1.7.2</span> Mitigations</h3>
+<ol type="1">
+<li><strong>Rep Context</strong>: Store and display reps achieved at max
+weight</li>
+<li><strong>Multiple Views</strong>: Show both max weight and recent
+PRs</li>
+<li><strong>Progressive Indicators</strong>: Highlight improvement
+trends beyond just PRs</li>
+</ol>
+<h3 data-number="1.7.3" id="benefits-gained"><span
+class="header-section-number">1.7.3</span> Benefits Gained</h3>
+<ol type="1">
+<li><strong>Clarity</strong>: Unambiguous “strongest I’ve ever been”
+metric</li>
+<li><strong>Motivation</strong>: Clear goals and progress
+indicators</li>
+<li><strong>Comparison</strong>: Fair evaluation across different rep
+ranges</li>
+<li><strong>Simplicity</strong>: Easy to understand and communicate</li>
+</ol>
+<h2 data-number="1.8" id="ui-implementation"><span
+class="header-section-number">1.8</span> UI Implementation</h2>
+<h3 data-number="1.8.1" id="pr-display"><span
+class="header-section-number">1.8.1</span> PR Display</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PRIndicatorView<span class="op">:</span> <span class="dt">View</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">pr</span><span class="op">:</span> PersonalRecord</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">body</span><span class="op">:</span> some View <span class="op">{</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        VStack<span class="op">(</span>alignment<span class="op">:</span> <span class="op">.</span>leading<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            HStack <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                Text<span class="op">(</span><span class="st">&quot;💪 PR: </span><span class="er">\(</span><span class="st">pr.maxWeight, format: .number) kg&quot;</span><span class="op">)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                    <span class="op">.</span>font<span class="op">(.</span>headline<span class="op">)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                Spacer<span class="op">()</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                Text<span class="op">(</span><span class="st">&quot;×</span><span class="er">\(</span><span class="st">pr.repsAtMaxWeight)&quot;</span><span class="op">)</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                    <span class="op">.</span>foregroundStyle<span class="op">(.</span>secondary<span class="op">)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            Text<span class="op">(</span><span class="st">&quot;Est. 1RM: </span><span class="er">\(</span><span class="st">pr.estimatedOneRM, format: .number) kg&quot;</span><span class="op">)</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>font<span class="op">(.</span>caption<span class="op">)</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>foregroundStyle<span class="op">(.</span>secondary<span class="op">)</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>            Text<span class="op">(</span><span class="st">&quot;Set on </span><span class="er">\(</span><span class="st">pr.achievedDate.formatted(.dateTime.month().day()))&quot;</span><span class="op">)</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>font<span class="op">(.</span>caption2<span class="op">)</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>foregroundStyle<span class="op">(.</span>tertiary<span class="op">)</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>padding<span class="op">()</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>background<span class="op">(.</span>thinMaterial<span class="op">)</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>clipShape<span class="op">(</span>RoundedRectangle<span class="op">(</span>cornerRadius<span class="op">:</span> <span class="dv">8</span><span class="op">))</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="1.8.2" id="new-pr-celebration"><span
+class="header-section-number">1.8.2</span> New PR Celebration</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> NewPRCelebrationView<span class="op">:</span> <span class="dt">View</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">exercise</span><span class="op">:</span> String</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">newWeight</span><span class="op">:</span> Double</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="va">oldWeight</span><span class="op">:</span> Double</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">body</span><span class="op">:</span> some View <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        VStack <span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            Text<span class="op">(</span><span class="st">&quot;🎉 NEW PR!&quot;</span><span class="op">)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>font<span class="op">(.</span>largeTitle<span class="op">)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>fontWeight<span class="op">(.</span>bold<span class="op">)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            Text<span class="op">(</span>exercise<span class="op">)</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>font<span class="op">(.</span>title2<span class="op">)</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            HStack <span class="op">{</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>                Text<span class="op">(</span><span class="st">&quot;</span><span class="er">\(</span><span class="st">oldWeight, format: .number) kg&quot;</span><span class="op">)</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>                    <span class="op">.</span>strikethrough<span class="op">()</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>                    <span class="op">.</span>foregroundStyle<span class="op">(.</span>secondary<span class="op">)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>                Text<span class="op">(</span><span class="st">&quot;→&quot;</span><span class="op">)</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>                Text<span class="op">(</span><span class="st">&quot;</span><span class="er">\(</span><span class="st">newWeight, format: .number) kg&quot;</span><span class="op">)</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>                    <span class="op">.</span>fontWeight<span class="op">(.</span>bold<span class="op">)</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>                    <span class="op">.</span>foregroundStyle<span class="op">(.</span>green<span class="op">)</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span>font<span class="op">(.</span>title<span class="op">)</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>accessibilityLabel<span class="op">(</span><span class="st">&quot;New personal record: </span><span class="er">\(</span><span class="st">exercise), </span><span class="er">\(</span><span class="st">newWeight) kilograms&quot;</span><span class="op">)</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="1.9" id="data-model-integration"><span
+class="header-section-number">1.9</span> Data Model Integration</h2>
+<h3 data-number="1.9.1" id="repository-methods"><span
+class="header-section-number">1.9.1</span> Repository Methods</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extension</span> SessionRepository <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">func</span> <span class="fu">findPR</span><span class="op">(</span><span class="va">exerciseID</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="fu">async</span> <span class="kw">throws</span> -&gt; <span class="fu">PersonalRecord</span>? <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Find all sets for the exercise</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="va">sets</span> <span class="op">=</span> <span class="cf">try</span> <span class="cf">await</span> fetchAllSets<span class="op">(</span>exerciseID<span class="op">:</span> exerciseID<span class="op">)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">guard</span> <span class="op">!</span>sets<span class="op">.</span>isEmpty <span class="cf">else</span> <span class="op">{</span> <span class="kw">return</span> <span class="kw">nil</span> <span class="op">}</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Find max weight set</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="va">maxWeightSet</span> <span class="op">=</span> sets<span class="op">.</span>max <span class="op">{</span> $<span class="fl">0.</span>weight <span class="op">&lt;</span> $<span class="fl">1.</span>weight <span class="op">}!</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Calculate Epley 1RM for max weight set</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="va">estimatedOneRM</span> <span class="op">=</span> maxWeightSet<span class="op">.</span>weight <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> Double<span class="op">(</span>maxWeightSet<span class="op">.</span>reps<span class="op">)</span> <span class="op">/</span> <span class="fl">30.0</span><span class="op">)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> PersonalRecord<span class="op">(</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            exerciseID<span class="op">:</span> exerciseID<span class="op">,</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            maxWeight<span class="op">:</span> maxWeightSet<span class="op">.</span>weight<span class="op">,</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            repsAtMaxWeight<span class="op">:</span> maxWeightSet<span class="op">.</span>reps<span class="op">,</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            estimatedOneRM<span class="op">:</span> estimatedOneRM<span class="op">,</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            achievedDate<span class="op">:</span> maxWeightSet<span class="op">.</span>session<span class="op">.</span>date</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="1.9.2" id="analytics-integration"><span
+class="header-section-number">1.9.2</span> Analytics Integration</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Weekly PR summary</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="va">thisWeekPRs</span> <span class="op">=</span> <span class="cf">try</span> <span class="cf">await</span> computePRsByCategory<span class="op">.</span>newPRsInRange<span class="op">(</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    start<span class="op">:</span> weekRange<span class="op">.</span>start<span class="op">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    end<span class="op">:</span> weekRange<span class="op">.</span>end</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Month-over-month PR comparison</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="va">monthlyPRProgress</span> <span class="op">=</span> <span class="cf">try</span> <span class="cf">await</span> computePRsByCategory<span class="op">.</span>prProgressInRange<span class="op">(</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    start<span class="op">:</span> monthRange<span class="op">.</span>start<span class="op">,</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    end<span class="op">:</span> monthRange<span class="op">.</span>end</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 data-number="1.10" id="success-metrics"><span
+class="header-section-number">1.10</span> Success Metrics</h2>
+<h3 data-number="1.10.1" id="user-engagement"><span
+class="header-section-number">1.10.1</span> User Engagement</h3>
+<ul>
+<li><strong>PR Celebrations</strong>: Track frequency of new PR
+achievements</li>
+<li><strong>Feature Usage</strong>: Percentage of users who view PR
+screens</li>
+<li><strong>Motivation Impact</strong>: Session frequency after PR
+achievements</li>
+</ul>
+<h3 data-number="1.10.2" id="data-quality"><span
+class="header-section-number">1.10.2</span> Data Quality</h3>
+<ul>
+<li><strong>Calculation Accuracy</strong>: Epley formula computation
+correctness</li>
+<li><strong>Performance</strong>: PR queries under 100ms for exercise
+history</li>
+<li><strong>Consistency</strong>: Zero discrepancies in PR
+calculations</li>
+</ul>
+<h2 data-number="1.11" id="implementation-status"><span
+class="header-section-number">1.11</span> Implementation Status</h2>
+<p><strong>Week 1</strong>: ✅ Foundation Complete - Basic SetRecord
+tracking with weight/reps - Domain entities supporting PR
+calculation</p>
+<p><strong>Week 2</strong>: 🚧 In Progress - ComputePRUseCase
+implementation - PR detection logic - UI components for PR display</p>
+<p><strong>Week 3</strong>: 📋 Planned Features - PR trends and
+analytics - Historical PR progression charts - Advanced PR categories
+(optional)</p>
+<hr />
+<p><strong>Last Updated</strong>: 2025-10-14 <strong>Next
+Review</strong>: End of Week 2 PR feature implementation</p>
+</body>
+</html>

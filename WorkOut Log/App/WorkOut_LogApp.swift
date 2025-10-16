@@ -11,10 +11,19 @@ import SwiftData
 @main
 struct WorkOut_LogApp: App {
     @State private var container = AppContainer()
-    
+    @State private var showSplash = true
+
     var body: some Scene {
         WindowGroup {
-            MainTabView(container: container)
+            ZStack {
+                MainTabView(container: container)
+
+                if showSplash {
+                    SplashView(isPresented: $showSplash)
+                        .transition(.opacity)
+                        .zIndex(1)
+                }
+            }
         }
         .modelContainer(container.modelContainer)
     }

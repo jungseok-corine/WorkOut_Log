@@ -16,6 +16,8 @@ struct TrendsView: View {
             VStack(spacing: 16) {
                 // Scope selector
                 Picker("Scope", selection: $vm.scope) {
+                    Text("Daily").tag(TrendScope.daily)
+                        .accessibilityIdentifier("trendScopeDaily")
                     Text("Weekly").tag(TrendScope.weekly)
                         .accessibilityIdentifier("trendScopeWeekly")
                     Text("Monthly").tag(TrendScope.monthly)
@@ -25,6 +27,16 @@ struct TrendsView: View {
                 .padding(.horizontal)
                 .onChange(of: vm.scope) { _, _ in
                     vm.scopeChanged()
+                }
+
+                // Show All Days toggle (only for Daily scope)
+                if vm.scope == .daily {
+                    Toggle("Show All Days", isOn: $vm.showAllDays)
+                        .padding(.horizontal)
+                        .accessibilityIdentifier("trendShowAllDaysToggle")
+                        .onChange(of: vm.showAllDays) { _, _ in
+                            vm.showAllDaysToggled()
+                        }
                 }
 
                 // Category filter chips

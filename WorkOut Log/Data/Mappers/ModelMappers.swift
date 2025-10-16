@@ -13,8 +13,7 @@ extension ExerciseModel {
         Exercise(
             id: id,
             name: name,
-            main: ExerciseCategoryMain(rawValue: mainRaw) ?? .fullBody,
-            upper: upperRaw.flatMap { ExerciseCategoryUpper(rawValue: $0) }
+            main: ExerciseCategoryMain(rawValue: mainRaw) ?? .fullBody
         )
     }
 
@@ -22,8 +21,7 @@ extension ExerciseModel {
         ExerciseModel(
             id: exercise.id,
             name: exercise.name,
-            mainRaw: exercise.main.rawValue,
-            upperRaw: exercise.upper?.rawValue
+            mainRaw: exercise.main.rawValue
         )
     }
 }

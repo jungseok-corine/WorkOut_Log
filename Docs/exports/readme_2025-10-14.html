@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README_NEW</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="github.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">README_NEW</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#workout-log" id="toc-workout-log"><span
+class="toc-section-number">1</span> WorkOut Log</a>
+<ul>
+<li><a href="#features" id="toc-features"><span
+class="toc-section-number">1.1</span> Features</a>
+<ul>
+<li><a href="#week-1-crud-essentials"
+id="toc-week-1-crud-essentials"><span
+class="toc-section-number">1.1.1</span> Week 1 (CRUD Essentials)
+✅</a></li>
+<li><a href="#week-2-insights-analytics"
+id="toc-week-2-insights-analytics"><span
+class="toc-section-number">1.1.2</span> Week 2 (Insights &amp;
+Analytics) 🚧</a></li>
+<li><a href="#week-3-polish-release"
+id="toc-week-3-polish-release"><span
+class="toc-section-number">1.1.3</span> Week 3 (Polish &amp; Release)
+🚧</a></li>
+</ul></li>
+<li><a href="#architecture" id="toc-architecture"><span
+class="toc-section-number">1.2</span> Architecture</a>
+<ul>
+<li><a href="#key-principles" id="toc-key-principles"><span
+class="toc-section-number">1.2.1</span> Key Principles</a></li>
+</ul></li>
+<li><a href="#tech-stack" id="toc-tech-stack"><span
+class="toc-section-number">1.3</span> Tech Stack</a></li>
+<li><a href="#project-structure" id="toc-project-structure"><span
+class="toc-section-number">1.4</span> Project Structure</a></li>
+<li><a href="#getting-started" id="toc-getting-started"><span
+class="toc-section-number">1.5</span> Getting Started</a>
+<ul>
+<li><a href="#prerequisites" id="toc-prerequisites"><span
+class="toc-section-number">1.5.1</span> Prerequisites</a></li>
+<li><a href="#build-run" id="toc-build-run"><span
+class="toc-section-number">1.5.2</span> Build &amp; Run</a></li>
+<li><a href="#run-tests" id="toc-run-tests"><span
+class="toc-section-number">1.5.3</span> Run Tests</a></li>
+</ul></li>
+<li><a href="#usage-guide" id="toc-usage-guide"><span
+class="toc-section-number">1.6</span> Usage Guide</a>
+<ul>
+<li><a href="#basic-workflow" id="toc-basic-workflow"><span
+class="toc-section-number">1.6.1</span> Basic Workflow</a></li>
+<li><a href="#data-model" id="toc-data-model"><span
+class="toc-section-number">1.6.2</span> Data Model</a></li>
+</ul></li>
+<li><a href="#development-guidelines"
+id="toc-development-guidelines"><span
+class="toc-section-number">1.7</span> Development Guidelines</a>
+<ul>
+<li><a href="#architecture-rules-must-follow"
+id="toc-architecture-rules-must-follow"><span
+class="toc-section-number">1.7.1</span> Architecture Rules (MUST
+FOLLOW)</a></li>
+<li><a href="#swiftdata-best-practices"
+id="toc-swiftdata-best-practices"><span
+class="toc-section-number">1.7.2</span> SwiftData Best
+Practices</a></li>
+<li><a href="#observation-pattern" id="toc-observation-pattern"><span
+class="toc-section-number">1.7.3</span> Observation Pattern</a></li>
+</ul></li>
+<li><a href="#contributing" id="toc-contributing"><span
+class="toc-section-number">1.8</span> Contributing</a>
+<ul>
+<li><a href="#commit-message-format"
+id="toc-commit-message-format"><span
+class="toc-section-number">1.8.1</span> Commit Message Format</a></li>
+</ul></li>
+<li><a href="#week-2-3-roadmap" id="toc-week-2-3-roadmap"><span
+class="toc-section-number">1.9</span> Week 2-3 Roadmap</a>
+<ul>
+<li><a href="#week-2-insights-analytics-1"
+id="toc-week-2-insights-analytics-1"><span
+class="toc-section-number">1.9.1</span> Week 2: Insights &amp;
+Analytics</a></li>
+<li><a href="#week-3-polish-release-1"
+id="toc-week-3-polish-release-1"><span
+class="toc-section-number">1.9.2</span> Week 3: Polish &amp;
+Release</a></li>
+</ul></li>
+<li><a href="#license" id="toc-license"><span
+class="toc-section-number">1.10</span> License</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 data-number="1" id="workout-log"><span
+class="header-section-number">1</span> WorkOut Log</h1>
+<p>A modern workout tracking app built with SwiftUI, SwiftData, and
+Clean Architecture for iOS 18+.</p>
+<h2 data-number="1.1" id="features"><span
+class="header-section-number">1.1</span> Features</h2>
+<h3 data-number="1.1.1" id="week-1-crud-essentials"><span
+class="header-section-number">1.1.1</span> Week 1 (CRUD Essentials)
+✅</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Session management
+(create, view, list)</label></li>
+<li><label><input type="checkbox" checked="" />Set tracking with live
+updates</label></li>
+<li><label><input type="checkbox" checked="" />Real-time volume
+calculation</label></li>
+<li><label><input type="checkbox" checked="" />SwiftData persistence
+with proper relationships</label></li>
+<li><label><input type="checkbox" checked="" />Clean Architecture
+(Presentation → Domain ← Data)</label></li>
+<li><label><input type="checkbox" checked="" />Comprehensive unit and UI
+tests</label></li>
+</ul>
+<h3 data-number="1.1.2" id="week-2-insights-analytics"><span
+class="header-section-number">1.1.2</span> Week 2 (Insights &amp;
+Analytics) 🚧</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Exercise categories and
+management</label></li>
+<li><label><input type="checkbox" />Weekly &amp; monthly volume charts
+by category</label></li>
+<li><label><input type="checkbox" />Personal Records (PR) tracking with
+Epley 1RM</label></li>
+<li><label><input type="checkbox" />Body metrics tracking (weight, body
+fat %, muscle mass)</label></li>
+</ul>
+<h3 data-number="1.1.3" id="week-3-polish-release"><span
+class="header-section-number">1.1.3</span> Week 3 (Polish &amp; Release)
+🚧</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Accessibility improvements
+(VoiceOver, Dynamic Type)</label></li>
+<li><label><input type="checkbox" />Snapshot tests for key
+screens</label></li>
+<li><label><input type="checkbox" />Complete documentation with
+ADRs</label></li>
+<li><label><input type="checkbox" />Export documentation
+scripts</label></li>
+</ul>
+<h2 data-number="1.2" id="architecture"><span
+class="header-section-number">1.2</span> Architecture</h2>
+<p>This app follows <strong>Global Clean Architecture</strong>
+principles:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph &quot;Presentation Layer&quot;
+        UI[Views &amp; ViewModels]
+        OBS[@Observable Pattern]
+    end
+
+    subgraph &quot;Domain Layer&quot;
+        ENT[Entities]
+        UC[Use Cases]
+        REPO[Repository Protocols]
+    end
+
+    subgraph &quot;Data Layer&quot;
+        IMPL[Repository Implementations]
+        SD[SwiftData Models]
+        MAP[Domain Mappers]
+    end
+
+    UI --&gt; UC
+    OBS --&gt; UC
+    UC --&gt; REPO
+    IMPL --&gt; REPO
+    IMPL --&gt; SD
+    IMPL --&gt; MAP
+    MAP --&gt; ENT</code></pre>
+<h3 data-number="1.2.1" id="key-principles"><span
+class="header-section-number">1.2.1</span> Key Principles</h3>
+<ul>
+<li><strong>Domain</strong> is pure Swift (no SwiftUI/SwiftData
+imports)</li>
+<li><strong>Presentation</strong> only knows Domain entities and use
+cases</li>
+<li><strong>Data</strong> implements Domain protocols and handles
+persistence</li>
+<li><strong>Unidirectional dependency flow</strong>: Presentation →
+Domain ← Data</li>
+</ul>
+<h2 data-number="1.3" id="tech-stack"><span
+class="header-section-number">1.3</span> Tech Stack</h2>
+<ul>
+<li><strong>iOS 18.6+</strong> / <strong>Swift 6</strong> (strict
+concurrency)</li>
+<li><strong>SwiftUI</strong> with <strong>Observation</strong> framework
+(<code>@Observable</code>)</li>
+<li><strong>SwiftData</strong> for local persistence</li>
+<li><strong>Charts</strong> framework for data visualization (Week
+2)</li>
+<li><strong>XCTest</strong> for unit and UI testing</li>
+</ul>
+<h2 data-number="1.4" id="project-structure"><span
+class="header-section-number">1.4</span> Project Structure</h2>
+<pre><code>WorkOut Log/
+├── App/
+│   ├── DI/AppContainer.swift        # Dependency injection container
+│   └── WorkOut_LogApp.swift         # App entry point
+├── Presentation/
+│   └── Scenes/
+│       ├── SessionList/             # Session overview &amp; management
+│       └── SessionDetail/           # Set tracking &amp; volume display
+├── Domain/
+│   ├── Entities/                    # Pure Swift domain models
+│   ├── UseCases/                    # Business logic operations
+│   └── Repositories/                # Abstract data access protocols
+├── Data/
+│   ├── SwiftDataModels/             # @Model classes for persistence
+│   ├── Repositories/                # Repository implementations
+│   ├── Mappers/                     # Domain ↔ Data conversion
+│   └── Persistence/                 # SwiftData configuration
+└── Tests/
+    ├── DomainTests/                 # Unit tests for business logic
+    └── UITests/                     # Integration &amp; flow tests</code></pre>
+<h2 data-number="1.5" id="getting-started"><span
+class="header-section-number">1.5</span> Getting Started</h2>
+<h3 data-number="1.5.1" id="prerequisites"><span
+class="header-section-number">1.5.1</span> Prerequisites</h3>
+<ul>
+<li><strong>Xcode 16+</strong></li>
+<li><strong>iOS 18.6+ Simulator or Device</strong></li>
+<li><strong>Git</strong> for version control</li>
+</ul>
+<h3 data-number="1.5.2" id="build-run"><span
+class="header-section-number">1.5.2</span> Build &amp; Run</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the repository</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/jungseok-corine/WorkOut_Log.git</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> WorkOut_Log</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Open in Xcode</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">open</span> <span class="st">&quot;WorkOut Log.xcodeproj&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Or build from command line</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">xcodebuild</span> <span class="at">-scheme</span> workout_log <span class="at">-destination</span> <span class="st">&#39;platform=iOS Simulator,name=iPhone 16&#39;</span> build</span></code></pre></div>
+<h3 data-number="1.5.3" id="run-tests"><span
+class="header-section-number">1.5.3</span> Run Tests</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Unit tests (Domain layer)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">xcodebuild</span> <span class="at">-scheme</span> workout_log <span class="at">-destination</span> <span class="st">&#39;platform=iOS Simulator,name=iPhone 16&#39;</span> test</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># UI tests (Integration)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">xcodebuild</span> <span class="at">-scheme</span> workout_logUITests <span class="at">-destination</span> <span class="st">&#39;platform=iOS Simulator,name=iPhone 16&#39;</span> test</span></code></pre></div>
+<h2 data-number="1.6" id="usage-guide"><span
+class="header-section-number">1.6</span> Usage Guide</h2>
+<h3 data-number="1.6.1" id="basic-workflow"><span
+class="header-section-number">1.6.1</span> Basic Workflow</h3>
+<ol type="1">
+<li><strong>Create Session</strong>: Tap “오늘 생성” to create a workout
+session for today</li>
+<li><strong>Add Sets</strong>: In session detail, enter weight and reps,
+then tap “Add Set”</li>
+<li><strong>View Progress</strong>: Session list shows total volume for
+each workout</li>
+<li><strong>Clone Workouts</strong>: Use “최근 복제” to repeat your last
+workout structure</li>
+</ol>
+<h3 data-number="1.6.2" id="data-model"><span
+class="header-section-number">1.6.2</span> Data Model</h3>
+<pre class="mermaid"><code>erDiagram
+    WorkoutSession ||--o{ SetRecord : contains
+    WorkoutSession {
+        string id PK
+        date date
+        string note
+    }
+    SetRecord {
+        string id PK
+        string sessionID FK
+        string exerciseID
+        double weight
+        int reps
+        int order
+        double volume
+    }</code></pre>
+<h2 data-number="1.7" id="development-guidelines"><span
+class="header-section-number">1.7</span> Development Guidelines</h2>
+<h3 data-number="1.7.1" id="architecture-rules-must-follow"><span
+class="header-section-number">1.7.1</span> Architecture Rules (MUST
+FOLLOW)</h3>
+<ul>
+<li><strong>Domain Layer</strong>: No imports of SwiftUI, SwiftData,
+Charts</li>
+<li><strong>SwiftData</strong>: Use <code>#Predicate&lt;Model&gt;</code>
+with explicit generics</li>
+<li><strong>FetchDescriptor</strong>: Set <code>fetchLimit</code> via
+property, not constructor</li>
+<li><strong>ViewModels</strong>: Prefer
+<code>@MainActor + @Observable</code> over Combine</li>
+<li><strong>Tests</strong>: Use
+<code>@testable import workout_log</code> for module access</li>
+</ul>
+<h3 data-number="1.7.2" id="swiftdata-best-practices"><span
+class="header-section-number">1.7.2</span> SwiftData Best Practices</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ✅ Correct: Explicit generic and property-based limit</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="va">predicate</span> <span class="op">=</span> #Predicate<span class="op">&lt;</span>WorkoutSessionModel<span class="op">&gt;</span> <span class="op">{</span> $<span class="fl">0.</span>date <span class="op">&gt;=</span> start <span class="op">}</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">descriptor</span> <span class="op">=</span> FetchDescriptor<span class="op">&lt;</span>WorkoutSessionModel<span class="op">&gt;(</span>predicate<span class="op">:</span> predicate<span class="op">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>descriptor<span class="op">.</span>fetchLimit <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">// ❌ Incorrect: No generic and constructor limit</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="va">predicate</span> <span class="op">=</span> #Predicate <span class="op">{</span> $<span class="fl">0.</span>date <span class="op">&gt;=</span> start <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="va">descriptor</span> <span class="op">=</span> FetchDescriptor<span class="op">(</span>predicate<span class="op">:</span> predicate<span class="op">,</span> fetchLimit<span class="op">:</span> <span class="dv">1</span><span class="op">)</span></span></code></pre></div>
+<h3 data-number="1.7.3" id="observation-pattern"><span
+class="header-section-number">1.7.3</span> Observation Pattern</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode swift"><code class="sourceCode swift"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ✅ Week 1 approach (iOS 18+)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">@MainActor</span> <span class="at">@Observable</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">final</span> <span class="kw">class</span> SessionListViewModel <span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">sessions</span><span class="op">:</span> <span class="op">[</span>SessionUI<span class="op">]</span> <span class="op">=</span> <span class="op">[]</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">// In SwiftUI View</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">@State</span> <span class="kw">var</span> <span class="va">vm</span><span class="op">:</span> SessionListViewModel</span></code></pre></div>
+<h2 data-number="1.8" id="contributing"><span
+class="header-section-number">1.8</span> Contributing</h2>
+<ol type="1">
+<li><strong>Fork</strong> the repository</li>
+<li><strong>Create</strong> a feature branch
+(<code>git checkout -b feat/amazing-feature</code>)</li>
+<li><strong>Follow</strong> Clean Architecture boundaries</li>
+<li><strong>Add</strong> unit tests for new use cases</li>
+<li><strong>Use</strong> Conventional Commits (<code>feat:</code>,
+<code>fix:</code>, <code>test:</code>, etc.)</li>
+<li><strong>Submit</strong> a Pull Request</li>
+</ol>
+<h3 data-number="1.8.1" id="commit-message-format"><span
+class="header-section-number">1.8.1</span> Commit Message Format</h3>
+<pre><code>&lt;type&gt;(&lt;scope&gt;): &lt;description&gt;
+
+&lt;body&gt;
+
+&lt;footer&gt;</code></pre>
+<p>Example:</p>
+<pre><code>feat(domain): add exercise categories and search functionality
+
+- Implement ExerciseCategory enum with 7 muscle groups
+- Add SearchExercisesUseCase with category filtering
+- Update Exercise entity to use structured categories
+
+Closes #123</code></pre>
+<h2 data-number="1.9" id="week-2-3-roadmap"><span
+class="header-section-number">1.9</span> Week 2-3 Roadmap</h2>
+<h3 data-number="1.9.1" id="week-2-insights-analytics-1"><span
+class="header-section-number">1.9.1</span> Week 2: Insights &amp;
+Analytics</h3>
+<ul>
+<li><strong>Exercise Management</strong>: Categories, search, recent
+picks</li>
+<li><strong>Volume Charts</strong>: Weekly/monthly stacked charts by
+muscle group</li>
+<li><strong>Personal Records</strong>: Max weight tracking with Epley
+1RM estimates</li>
+<li><strong>Body Metrics</strong>: Weight, body fat %, muscle mass
+tracking over time</li>
+</ul>
+<h3 data-number="1.9.2" id="week-3-polish-release-1"><span
+class="header-section-number">1.9.2</span> Week 3: Polish &amp;
+Release</h3>
+<ul>
+<li><strong>Accessibility</strong>: VoiceOver support, Dynamic Type
+scaling</li>
+<li><strong>Documentation</strong>: ADRs, developer guide, export
+scripts</li>
+<li><strong>Testing</strong>: Snapshot tests for visual regression
+detection</li>
+<li><strong>CI/CD</strong>: Automated builds, test reports, deployment
+pipeline</li>
+</ul>
+<h2 data-number="1.10" id="license"><span
+class="header-section-number">1.10</span> License</h2>
+<p>MIT License - see <a href="LICENSE">LICENSE</a> for details.</p>
+<hr />
+<p><strong>Built with ❤️ using Swift 6, SwiftUI, and Clean Architecture
+principles.</strong></p>
+<p>Current Status: <strong>Week 1 Complete</strong> - Full CRUD
+operations with live volume tracking</p>
+</body>
+</html>
