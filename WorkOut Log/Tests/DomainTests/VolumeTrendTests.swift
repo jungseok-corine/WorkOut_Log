@@ -15,7 +15,7 @@ final class VolumeTrendTests: XCTestCase {
         let useCase = ComputeVolumeTrendUseCase(sessionRepo: sessionRepo, exerciseRepo: exerciseRepo)
 
         // Create exercise
-        let exercise = Exercise(id: "ex1", name: "Bench Press", main: .upperBody, upper: .chest)
+        let exercise = Exercise(id: "ex1", name: "Bench Press", main: .upperBody)
         try await exerciseRepo.upsert(exercise)
 
         // Create sessions with sets over multiple weeks
@@ -49,8 +49,8 @@ final class VolumeTrendTests: XCTestCase {
         let useCase = ComputeVolumeTrendUseCase(sessionRepo: sessionRepo, exerciseRepo: exerciseRepo)
 
         // Create exercises in different categories
-        let upperExercise = Exercise(id: "ex1", name: "Bench Press", main: .upperBody, upper: .chest)
-        let lowerExercise = Exercise(id: "ex2", name: "Squat", main: .lowerBody, upper: nil)
+        let upperExercise = Exercise(id: "ex1", name: "Bench Press", main: .upperBody)
+        let lowerExercise = Exercise(id: "ex2", name: "Squat", main: .lowerBody)
         try await exerciseRepo.upsert(upperExercise)
         try await exerciseRepo.upsert(lowerExercise)
 

@@ -39,16 +39,34 @@ final class SessionRepositoryImpl: SessionRepository {
         try fetchSessionModel(id: id)?.toDomain()
     }
 
+    func fetchAll() async throws -> [WorkoutSession] {
+        // Sort by date descending (most recent first), with id ascending as stable tie-breaker
+        let sort = [
+            SortDescriptor(\WorkoutSessionModel.date, order: .reverse),
+            SortDescriptor(\WorkoutSessionModel.id, order: .forward)
+        ]
+        let d = FetchDescriptor<WorkoutSessionModel>(sortBy: sort)
+        return try context.fetch(d).map { $0.toDomain() }
+    }
+
     func fetchRange(start: Date, end: Date) async throws -> [WorkoutSession] {
         let predicate = #Predicate<WorkoutSessionModel> { $0.date >= start && $0.date < end }
-        let sort = [SortDescriptor(\WorkoutSessionModel.date, order: .reverse)]
+        // Sort by date descending (most recent first), with id ascending as stable tie-breaker
+        let sort = [
+            SortDescriptor(\WorkoutSessionModel.date, order: .reverse),
+            SortDescriptor(\WorkoutSessionModel.id, order: .forward)
+        ]
         let d = FetchDescriptor<WorkoutSessionModel>(predicate: predicate, sortBy: sort)
         return try context.fetch(d).map { $0.toDomain() }
     }
 
     func latest() async throws -> WorkoutSession? {
-        let sort = [SortDescriptor(\WorkoutSessionModel.date, order: .reverse)]
-        var d = FetchDescriptor<WorkoutSessionModel>(predicate: nil, sortBy: sort)
+        // Sort by date descending, with id ascending as stable tie-breaker
+        let sort = [
+            SortDescriptor(\WorkoutSessionModel.date, order: .reverse),
+            SortDescriptor(\WorkoutSessionModel.id, order: .forward)
+        ]
+        var d = FetchDescriptor<WorkoutSessionModel>(sortBy: sort)
         // 일부 Xcode 버전에서 init(fetchLimit:) 미지원 → 프로퍼티로 설정
         d.fetchLimit = 1
         return try context.fetch(d).first?.toDomain()

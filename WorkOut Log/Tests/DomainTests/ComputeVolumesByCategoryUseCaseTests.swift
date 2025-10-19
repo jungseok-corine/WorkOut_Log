@@ -27,8 +27,8 @@ final class ComputeVolumesByCategoryUseCaseTests: XCTestCase {
         let session1 = WorkoutSession(id: "s1", date: Date(), note: nil)
         let session2 = WorkoutSession(id: "s2", date: Date(), note: nil)
 
-        let chestExercise = Exercise(id: "e1", name: "Bench Press", category: .chest)
-        let legExercise = Exercise(id: "e2", name: "Squat", category: .legs)
+        let chestExercise = Exercise(id: "e1", name: "Bench Press", main: .upperBody)
+        let legExercise = Exercise(id: "e2", name: "Squat", main: .lowerBody)
 
         let sets = [
             SetRecord(id: "set1", sessionID: "s1", exerciseID: "e1", weight: 80, reps: 10, order: 0), // 800
@@ -52,11 +52,11 @@ final class ComputeVolumesByCategoryUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(volumes.count, 2)
 
-        let chestVolume = volumes.first { $0.category == .chest }
-        let legVolume = volumes.first { $0.category == .legs }
+        let upperVolume = volumes.first { $0.category == .upperBody }
+        let lowerVolume = volumes.first { $0.category == .lowerBody }
 
-        XCTAssertEqual(chestVolume?.totalVolume, 1480) // 800 + 680
-        XCTAssertEqual(legVolume?.totalVolume, 500)
+        XCTAssertEqual(upperVolume?.totalVolume, 1480) // 800 + 680
+        XCTAssertEqual(lowerVolume?.totalVolume, 500)
 
         // Should be sorted by volume (highest first)
         XCTAssertEqual(volumes[0].totalVolume, 1480)
@@ -113,6 +113,10 @@ class MockSessionRepository: SessionRepository {
 
     func fetch(by id: String) async throws -> WorkoutSession? {
         return mockSessions.first { $0.id == id }
+    }
+
+    func fetchAll() async throws -> [WorkoutSession] {
+        return mockSessions.sorted { $0.date > $1.date || ($0.date == $1.date && $0.id < $1.id) }
     }
 
     func fetchRange(start: Date, end: Date) async throws -> [WorkoutSession] {

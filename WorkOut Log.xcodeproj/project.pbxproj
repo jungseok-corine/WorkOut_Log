@@ -33,36 +33,48 @@
 		99DC4E2B2E9E3852006B8C3F /* Exceptions for "WorkOut Log" folder in "WorkOut LogTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Tests/DataTests/ExerciseRepositorySearchTests.swift,
+				Tests/DataTests/SessionRepositorySortTests.swift,
 				Tests/DomainTests/AddSetUseCaseTests.swift,
 				Tests/DomainTests/BodyMetricUseCaseTests.swift,
 				Tests/DomainTests/ComputePRUseCaseTests.swift,
 				Tests/DomainTests/ComputeVolumesByCategoryUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
+				Tests/DomainTests/DailyTrendAxisTests.swift,
 				Tests/DomainTests/DeleteSessionUseCaseTests.swift,
 				Tests/DomainTests/ExerciseTaxonomyTests.swift,
 				Tests/DomainTests/ExerciseUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
+				Tests/DomainTests/SanityTests.swift,
+				Tests/DomainTests/SessionListViewModelTests.swift,
 				Tests/DomainTests/SessionListVolumeTests.swift,
 				Tests/DomainTests/SetCRUDTests.swift,
 				Tests/DomainTests/VolumeTrendTests.swift,
+				Tests/DomainTests/WeeklyBucketTests.swift,
 			);
 			target = 99DC4DC52E9E2853006B8C3F /* WorkOut LogTests */;
 		};
 		99DC4E2E2E9E387D006B8C3F /* Exceptions for "WorkOut Log" folder in "WorkOut Log" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Tests/DataTests/ExerciseRepositorySearchTests.swift,
+				Tests/DataTests/SessionRepositorySortTests.swift,
 				Tests/DomainTests/AddSetUseCaseTests.swift,
 				Tests/DomainTests/BodyMetricUseCaseTests.swift,
 				Tests/DomainTests/ComputePRUseCaseTests.swift,
 				Tests/DomainTests/ComputeVolumesByCategoryUseCaseTests.swift,
 				Tests/DomainTests/CreateSessionUseCaseTests.swift,
+				Tests/DomainTests/DailyTrendAxisTests.swift,
 				Tests/DomainTests/DeleteSessionUseCaseTests.swift,
 				Tests/DomainTests/ExerciseTaxonomyTests.swift,
 				Tests/DomainTests/ExerciseUseCaseTests.swift,
 				Tests/DomainTests/InMemorySessionRepository.swift,
+				Tests/DomainTests/SanityTests.swift,
+				Tests/DomainTests/SessionListViewModelTests.swift,
 				Tests/DomainTests/SessionListVolumeTests.swift,
 				Tests/DomainTests/SetCRUDTests.swift,
 				Tests/DomainTests/VolumeTrendTests.swift,
+				Tests/DomainTests/WeeklyBucketTests.swift,
 			);
 			target = 99DC4DB62E9E2850006B8C3F /* WorkOut Log */;
 		};
@@ -365,7 +377,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -423,7 +435,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -438,6 +450,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -453,12 +466,12 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Ben.WorkOut-Log";
 				PRODUCT_MODULE_NAME = workout_log;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -481,6 +494,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -496,12 +510,12 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Ben.WorkOut-Log";
 				PRODUCT_MODULE_NAME = workout_log;
 				PRODUCT_NAME = "$(TARGET_NAME)";

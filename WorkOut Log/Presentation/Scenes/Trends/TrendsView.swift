@@ -10,7 +10,25 @@ import Charts
 
 struct TrendsView: View {
     @State var vm: TrendsViewModel
-
+    
+    private let sundayStartCalendar: Calendar = {
+        var c = Calendar(identifier: .gregorian)
+        c.firstWeekday = 1 // Sunday
+        return c
+    }()
+    
+    /// Accessibility label for the chart based on current scope
+    private var accessibilityChartLabel: String {
+        switch vm.scope {
+        case .daily:
+            return "Daily training volume trend"
+        case .weekly:
+            return "Weekly training volume trend"
+        case .monthly:
+            return "Monthly training volume trend"
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
@@ -28,7 +46,7 @@ struct TrendsView: View {
                 .onChange(of: vm.scope) { _, _ in
                     vm.scopeChanged()
                 }
-
+                
                 // Show All Days toggle (only for Daily scope)
                 if vm.scope == .daily {
                     Toggle("Show All Days", isOn: $vm.showAllDays)
@@ -38,7 +56,7 @@ struct TrendsView: View {
                             vm.showAllDaysToggled()
                         }
                 }
-
+                
                 // Category filter chips
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -56,7 +74,7 @@ struct TrendsView: View {
                                 .cornerRadius(16)
                         }
                         .accessibilityIdentifier("categoryChip_all")
-
+                        
                         ForEach(ExerciseCategoryMain.allCases, id: \.self) { category in
                             Button {
                                 vm.selectedCategory = category
@@ -75,7 +93,7 @@ struct TrendsView: View {
                     }
                     .padding(.horizontal)
                 }
-
+                
                 // Chart
                 if vm.isLoading {
                     ProgressView()
@@ -92,7 +110,7 @@ struct TrendsView: View {
                         )
                         .foregroundStyle(.blue)
                         .interpolationMethod(.catmullRom)
-
+                        
                         PointMark(
                             x: .value("Period", point.date),
                             y: .value("Volume", point.volume)
@@ -100,10 +118,69 @@ struct TrendsView: View {
                         .foregroundStyle(.blue)
                     }
                     .chartXAxis {
-                        AxisMarks(values: vm.trendData.map { $0.date }) { value in
-                            if let date = value.as(Date.self),
-                               let point = vm.trendData.first(where: { Calendar.current.isDate($0.date, inSameDayAs: date) }) {
-                                AxisValueLabel(point.periodLabel)
+                        switch vm.scope {
+                        case .daily:
+                            // Custom two-line labels for Daily: month / day
+                            // Use stride to reduce label density when count is high
+                            let strideCount = (vm.trendData.count > 8) ? 2 : 1
+                            AxisMarks(values: .stride(by: .day, count: strideCount)) { value in
+                                AxisGridLine()
+                                AxisTick()
+                                AxisValueLabel(content: {
+                                    if let date = value.as(Date.self) {
+                                        // Build accessibility label as explicit String
+                                        let a11yLabel: String = date.formatted(.dateTime.month(.wide).day())
+                                        VStack(spacing: 0) {
+                                            // Top: month (short, secondary color)
+                                            Text(date, format: .dateTime.month(.abbreviated))
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                            // Bottom: day (emphasized)
+                                            Text(date, format: .dateTime.day())
+                                                .font(.caption2)
+                                                .bold()
+                                        }
+                                        .multilineTextAlignment(.center)
+                                        .accessibilityLabel(a11yLabel) // String overload only
+                                    }
+                                })
+                            }
+                        case .weekly:
+                            // Custom two-line labels for Weekly: month / day range (Sun–Sat)
+                            AxisMarks(values: vm.trendData.map { $0.date }) { value in
+                                AxisGridLine()
+                                AxisTick()
+                                AxisValueLabel(content: {
+                                    if let weekStart = value.as(Date.self) {
+                                        // Sunday-start calendar for week calculations
+                                        let weekEnd = sundayStartCalendar.date(byAdding: .day, value: 6, to: weekStart)!
+                                        let startDay = sundayStartCalendar.component(.day, from: weekStart)
+                                        let endDay   = sundayStartCalendar.component(.day, from: weekEnd)
+                                        // Accessibility label must be String or Text (not a closure)
+                                        let a11yLabel: String =
+                                        "\(weekStart.formatted(.dateTime.month(.wide).day())) to \(weekEnd.formatted(.dateTime.month(.wide).day()))"
+                                        VStack(spacing: 0) {
+                                            // Top: month of week start
+                                            Text(weekStart, format: .dateTime.month(.abbreviated))
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                            // Bottom: day range (e.g., "6–12")
+                                            Text("\(startDay)–\(endDay)")
+                                                .font(.caption2)
+                                                .bold()
+                                        }
+                                        .multilineTextAlignment(.center)
+                                        .accessibilityLabel(a11yLabel) // String overload only
+                                    }
+                                })
+                            }
+                        case .monthly:
+                            // Standard single-line labels for Monthly
+                            AxisMarks(values: vm.trendData.map { $0.date }) { value in
+                                if let date = value.as(Date.self),
+                                   let point = vm.trendData.first(where: { Calendar.current.isDate($0.date, inSameDayAs: date) }) {
+                                    AxisValueLabel(point.periodLabel)
+                                }
                             }
                         }
                     }
@@ -118,8 +195,9 @@ struct TrendsView: View {
                     }
                     .frame(height: 300)
                     .padding()
+                    .accessibilityLabel(accessibilityChartLabel)
                 }
-
+                
                 Spacer()
             }
             .navigationTitle("Trends")

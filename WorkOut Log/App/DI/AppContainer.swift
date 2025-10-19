@@ -79,4 +79,45 @@ final class AppContainer {
         self.createBodyMetric = CreateBodyMetricUseCase(repo: bodyMetricRepo)
         self.fetchBodyMetricsRange = FetchBodyMetricsRangeUseCase(repo: bodyMetricRepo)
     }
+
+    // Test initializer that accepts repositories for dependency injection
+    init(sessionRepo: SessionRepository, exerciseRepo: ExerciseRepository) {
+        // Use dummy container for tests
+        self.modelContainer = try! ModelContainer(for: Schema([]), configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        self.modelContext = ModelContext(modelContainer)
+
+        // Use injected repositories
+        self.sessionRepo = sessionRepo
+        self.exerciseRepo = exerciseRepo
+        self.bodyMetricRepo = BodyMetricRepositoryImpl(context: modelContext)
+
+        // Initialize session use cases
+        self.createSession = CreateSessionUseCase(repo: sessionRepo)
+        self.deleteSession = DeleteSessionUseCase(repo: sessionRepo)
+        self.addSet = AddSetUseCase(repo: sessionRepo)
+        self.updateSet = UpdateSetUseCase(repo: sessionRepo)
+        self.deleteSet = DeleteSetUseCase(repo: sessionRepo)
+        self.cloneLatest = CloneLatestSessionUseCase(repo: sessionRepo)
+
+        // Initialize exercise use cases
+        self.upsertExercise = UpsertExerciseUseCase(repo: exerciseRepo)
+        self.deleteExercise = DeleteExerciseUseCase(repo: exerciseRepo)
+        self.searchExercises = SearchExercisesUseCase(repo: exerciseRepo)
+        self.recentExercises = RecentExercisesUseCase(repo: exerciseRepo)
+
+        // Initialize analytics use cases
+        self.computeVolumesByCategory = ComputeVolumesByCategoryUseCase(
+            sessionRepo: sessionRepo,
+            exerciseRepo: exerciseRepo
+        )
+        self.computePR = ComputePRUseCase(sessionRepo: sessionRepo)
+        self.computeVolumeTrend = ComputeVolumeTrendUseCase(
+            sessionRepo: sessionRepo,
+            exerciseRepo: exerciseRepo
+        )
+
+        // Initialize body metrics use cases
+        self.createBodyMetric = CreateBodyMetricUseCase(repo: bodyMetricRepo)
+        self.fetchBodyMetricsRange = FetchBodyMetricsRangeUseCase(repo: bodyMetricRepo)
+    }
 }

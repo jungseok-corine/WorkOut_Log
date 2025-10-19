@@ -77,20 +77,23 @@ final class ExerciseRepositoryImpl: ExerciseRepository {
     }
 
     func search(nameLike: String) async throws -> [Exercise] {
-        let query = nameLike.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let query = nameLike.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !query.isEmpty else {
             return try await fetchAll()
         }
 
-        let searchQuery = query
-        let predicate = #Predicate<ExerciseModel> { model in
-            model.name.localizedLowercase.contains(searchQuery)
-        }
-
+        // Fetch all exercises sorted by name
+        // Note: Cannot use .localizedLowercase in SwiftData KeyPath predicates
+        // (SwiftData only supports stored properties, not value-type member chaining)
+        // Instead, fetch all and filter client-side for case-insensitive search
         let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
-        let descriptor = FetchDescriptor<ExerciseModel>(predicate: predicate, sortBy: sort)
+        var descriptor = FetchDescriptor<ExerciseModel>(sortBy: sort)
+        descriptor.fetchLimit = 200 // Prevent unbounded growth
 
-        return try context.fetch(descriptor).map { $0.toDomain() }
+        // Apply case-insensitive filter in-memory
+        return try context.fetch(descriptor)
+            .filter { $0.name.localizedStandardContains(query) }
+            .map { $0.toDomain() }
     }
 
     func recent(limit: Int) async throws -> [Exercise] {

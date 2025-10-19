@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOut Log - Developer Tutorial</title>
+    <style>
+        /* ==============================================
+           BASE STYLES - Screen & Print
+           ============================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #1d1d1f;
+            background: #ffffff;
+            padding: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ==============================================
+           PRINT STYLES - A4 PDF Export Ready
+           ============================================== */
+        @media print {
+            body {
+                padding: 0.5cm;
+                max-width: 100%;
+                font-size: 10pt;
+                line-height: 1.5;
+            }
+
+            @page {
+                size: A4;
+                margin: 1.5cm 1.5cm 2cm 1.5cm;
+            }
+
+            /* Prevent page breaks inside elements */
+            h1, h2, h3, h4 {
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+
+            pre, .code-block, .diagram, table, .alert {
+                page-break-inside: avoid;
+            }
+
+            /* Hide non-print elements */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Force color preservation in print */
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Optimize spacing for print */
+            h1 { font-size: 20pt; margin-bottom: 0.5rem; }
+            h2 { font-size: 16pt; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+            h3 { font-size: 13pt; margin-top: 1rem; margin-bottom: 0.5rem; }
+            h4 { font-size: 11pt; margin-top: 0.75rem; margin-bottom: 0.5rem; }
+            p, ul, ol { margin-bottom: 0.75rem; }
+            pre { font-size: 8pt; padding: 0.5rem; }
+        }
+
+        /* ==============================================
+           TYPOGRAPHY
+           ============================================== */
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: #007aff;
+            margin-bottom: 1rem;
+            border-bottom: 4px solid #007aff;
+            padding-bottom: 0.75rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+            border-left: 5px solid #007aff;
+            padding-left: 1.25rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c2c2e;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #48484a;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            text-align: justify;
+        }
+
+        strong {
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        em {
+            font-style: italic;
+            color: #636366;
+        }
+
+        a {
+            color: #007aff;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-bottom-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: #007aff;
+        }
+
+        /* ==============================================
+           DOCUMENT METADATA HEADER
+           ============================================== */
+        .metadata {
+            background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #d2d2d7;
+            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
+        }
+
+        .metadata p {
+            margin-bottom: 0.4rem;
+        }
+
+        .metadata strong {
+            color: #007aff;
+        }
+
+        /* ==============================================
+           TABLE OF CONTENTS
+           ============================================== */
+        .toc {
+            background: #f5f5f7;
+            border: 2px solid #d2d2d7;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: #007aff;
+            border-bottom: 2px solid #007aff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 0.65rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .toc li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #007aff;
+            font-weight: bold;
+        }
+
+        .toc a {
+            color: #1d1d1f;
+            font-weight: 500;
+        }
+
+        .toc a:hover {
+            color: #007aff;
+        }
+
+        /* ==============================================
+           CODE BLOCKS
+           ============================================== */
+        pre {
+            background: #1d1d1f;
+            color: #f5f5f7;
+            padding: 1.25rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid #3a3a3c;
+        }
+
+        code {
+            background: #f5f5f7;
+            color: #c7254e;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 1px solid #d2d2d7;
+        }
+
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+            border: none;
+        }
+
+        /* Syntax highlighting hints */
+        .keyword { color: #fc6a5d; }
+        .string { color: #5dd8ff; }
+        .comment { color: #6c7986; font-style: italic; }
+        .function { color: #67b7a4; }
+
+        /* ==============================================
+           LISTS
+           ============================================== */
+        ul, ol {
+            margin-left: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.65rem;
+            line-height: 1.7;
+        }
+
+        li code {
+            font-size: 0.85em;
+        }
+
+        /* ==============================================
+           ASCII DIAGRAMS
+           ============================================== */
+        .diagram {
+            background: #f5f5f7;
+            border: 2px solid #d2d2d7;
+            border-radius: 10px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.9;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* ==============================================
+           TABLES
+           ============================================== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #d2d2d7;
+        }
+
+        th {
+            background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            font-weight: 600;
+            color: #1d1d1f;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        /* ==============================================
+           ALERT BOXES
+           ============================================== */
+        .alert {
+            padding: 1.25rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border-left: 5px solid;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-title::before {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #d1ebfc 100%);
+            border-color: #2196f3;
+            color: #0d47a1;
+        }
+
+        .alert-info .alert-title::before {
+            content: '💡';
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-color: #ff9800;
+            color: #e65100;
+        }
+
+        .alert-warning .alert-title::before {
+            content: '⚠️';
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-color: #f44336;
+            color: #c62828;
+        }
+
+        .alert-danger .alert-title::before {
+            content: '🔴';
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+
+        .alert-success .alert-title::before {
+            content: '✅';
+        }
+
+        .alert ul {
+            margin-left: 1.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .alert li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ==============================================
+           COMMAND BLOCKS
+           ============================================== */
+        .command {
+            background: #1d1d1f;
+            color: #5dd8ff;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1.5rem 0;
+            position: relative;
+            border: 1px solid #3a3a3c;
+        }
+
+        .command::before {
+            content: '$ ';
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        /* ==============================================
+           FOOTER
+           ============================================== */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2.5rem;
+            border-top: 2px solid #d2d2d7;
+            text-align: center;
+            color: #86868b;
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ==============================================
+           SECTION STYLING
+           ============================================== */
+        section {
+            margin-bottom: 3rem;
+        }
+
+        section:target {
+            scroll-margin-top: 2rem;
+            animation: highlight 1.5s ease-out;
+        }
+
+        @keyframes highlight {
+            0% { background-color: #fff3cd; }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WorkOut Log — Developer Tutorial</h1>
+        <div class="metadata">
+            <p><strong>Document Version:</strong> 1.0.0</p>
+            <p><strong>Date:</strong> October 19, 2025</p>
+            <p><strong>Author:</strong> Ben (오정석) with Claude (AI Assistant)</p>
+            <p><strong>Platform:</strong> iOS 18+, Swift 6, SwiftUI + Observation, SwiftData</p>
+            <p><strong>GitHub:</strong> <a href="https://github.com/jungseok-corine/WorkOut_Log">github.com/jungseok-corine/WorkOut_Log</a></p>
+            <p><strong>Support:</strong> fiverights99@gmail.com</p>
+        </div>
+    </header>
+
+    <nav class="toc">
+        <h3>📚 Table of Contents</h3>
+        <ul>
+            <li><a href="#overview">1. App Overview & Core Concepts</a></li>
+            <li><a href="#folder-structure">2. Folder Structure & Layer Responsibilities</a></li>
+            <li><a href="#swiftdata">3. SwiftData Models & CRUD Operations</a></li>
+            <li><a href="#viewmodel">4. ViewModel Pattern with Observation Framework</a></li>
+            <li><a href="#trends">5. Trends Calculation (Daily/Weekly/Monthly)</a></li>
+            <li><a href="#testing">6. Running Tests & Build Commands</a></li>
+            <li><a href="#troubleshooting">7. Common Errors & Solutions</a></li>
+            <li><a href="#glossary">8. Glossary of Terms</a></li>
+            <li><a href="#resources">9. Additional Resources & Links</a></li>
+        </ul>
+    </nav>
+
+    <!-- SECTION 1: OVERVIEW -->
+    <section id="overview">
+        <h2>1. App Overview & Core Concepts</h2>
+
+        <h3>1.1 What is WorkOut Log?</h3>
+        <p>
+            <strong>WorkOut Log</strong> is a privacy-first iOS workout tracking application that allows users to record exercise sessions, track sets (weight × reps), and visualize training volume trends over time. The app is built entirely offline with <strong>zero data collection</strong>, using SwiftData for local persistence.
+        </p>
+
+        <h3>1.2 Key Features</h3>
+        <ul>
+            <li><strong>Session Management:</strong> Create workout sessions with dates and notes</li>
+            <li><strong>Set Tracking:</strong> Record exercise name, weight (kg), and repetitions</li>
+            <li><strong>Auto-Calculated Volume:</strong> Volume = weight × reps (e.g., 100kg × 10 = 1000kg volume)</li>
+            <li><strong>Exercise Library:</strong> 7 muscle group categories (Lower Body, Upper Body, Cardio, Core, Full Body, Arms, Shoulders)</li>
+            <li><strong>Trends & Analytics:</strong> Daily (≤10 days), Weekly (8 weeks, Sunday-Saturday), Monthly (6 months)</li>
+            <li><strong>Personal Records (PR):</strong> Track 1RM using Epley formula</li>
+            <li><strong>Accessibility:</strong> Full VoiceOver support, Dynamic Type, high contrast</li>
+        </ul>
+
+        <h3>1.3 Tech Stack</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Language</td>
+                    <td>Swift 6</td>
+                    <td>Strict concurrency mode enabled</td>
+                </tr>
+                <tr>
+                    <td>UI Framework</td>
+                    <td>SwiftUI</td>
+                    <td>Declarative UI with @Observable ViewModels</td>
+                </tr>
+                <tr>
+                    <td>State Management</td>
+                    <td>Observation Framework</td>
+                    <td>Replaces @ObservableObject/@Published</td>
+                </tr>
+                <tr>
+                    <td>Persistence</td>
+                    <td>SwiftData</td>
+                    <td>Local-only, no iCloud sync (optional backup)</td>
+                </tr>
+                <tr>
+                    <td>Charts</td>
+                    <td>Swift Charts</td>
+                    <td>Native Apple framework for data visualization</td>
+                </tr>
+                <tr>
+                    <td>Architecture</td>
+                    <td>Clean Architecture</td>
+                    <td>3-layer: Presentation → Domain ← Data</td>
+                </tr>
+                <tr>
+                    <td>Testing</td>
+                    <td>XCTest</td>
+                    <td>Unit tests + UI automation tests</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert alert-info">
+            <div class="alert-title">Core Philosophy</div>
+            <p>
+                This app prioritizes <strong>user privacy</strong> and <strong>architectural purity</strong>.
+                The Domain layer has ZERO imports of SwiftUI or SwiftData, ensuring business logic remains
+                framework-independent and highly testable.
+            </p>
+        </div>
+    </section>
+
+    <!-- SECTION 2: FOLDER STRUCTURE -->
+    <section id="folder-structure">
+        <h2>2. Folder Structure & Layer Responsibilities</h2>
+
+        <h3>2.1 Clean Architecture Diagram</h3>
+        <div class="diagram">┌─────────────────────────────────────────────────────────────┐
+│                    PRESENTATION LAYER                        │
+│  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐  │
+│  │  SwiftUI    │────▶│  ViewModel   │────▶│   View      │  │
+│  │  Views      │     │  (@Observable)│     │  Modifiers  │  │
+│  └─────────────┘     └──────┬───────┘     └─────────────┘  │
+└─────────────────────────────┼───────────────────────────────┘
+                               │ calls Use Cases
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      DOMAIN LAYER                            │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
+│  │  Use Cases   │───▶│  Entities    │───▶│ Repositories │  │
+│  │  (Business   │    │  (Exercise,  │    │ (Protocols)  │  │
+│  │   Logic)     │    │   Session)   │    │              │  │
+│  └──────────────┘    └──────────────┘    └──────┬───────┘  │
+└─────────────────────────────────────────────────┼───────────┘
+                                                   │ implements
+                                                   ▼
+┌─────────────────────────────────────────────────────────────┐
+│                       DATA LAYER                             │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
+│  │ RepositoryImpl│───▶│ SwiftData    │───▶│ ModelContext │  │
+│  │ (ExerciseRepo,│    │ Models       │    │  (Managed)   │  │
+│  │  SessionRepo) │    │ (@Model)     │    │              │  │
+│  └──────────────┘    └──────────────┘    └──────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+
+<strong>Dependency Rule:</strong>
+  ✅ Presentation → Domain (ViewModels call Use Cases)
+  ✅ Data → Domain (RepositoryImpl implements Repository protocols)
+  ❌ Domain ↛ Presentation (Domain never imports SwiftUI)
+  ❌ Domain ↛ Data (Domain never imports SwiftData)</div>
+
+        <h3>2.2 Directory Tree</h3>
+        <pre><code>WorkOut Log/
+├── App/
+│   ├── DI/
+│   │   └── AppContainer.swift          # Dependency injection
+│   └── WorkOut_LogApp.swift            # App entry point
+│
+├── Presentation/                       # UI Layer
+│   └── Scenes/
+│       ├── SessionList/
+│       │   ├── SessionListView.swift
+│       │   └── SessionListViewModel.swift
+│       ├── SessionDetail/
+│       │   ├── SessionDetailView.swift
+│       │   └── SessionDetailViewModel.swift
+│       ├── Exercise/
+│       │   ├── ExerciseSearchView.swift
+│       │   └── ExercisePickerView.swift
+│       ├── Trends/
+│       │   ├── TrendsView.swift
+│       │   └── TrendsViewModel.swift
+│       └── Splash/
+│           └── SplashView.swift
+│
+├── Domain/                             # ⚠️ NO SwiftUI/SwiftData imports!
+│   ├── Entities/
+│   │   ├── Exercise.swift
+│   │   ├── WorkoutSession.swift
+│   │   ├── SetRecord.swift
+│   │   └── ExerciseCategoryMain.swift
+│   ├── UseCases/
+│   │   ├── UpsertExerciseUseCase.swift
+│   │   ├── CreateSessionUseCase.swift
+│   │   ├── ComputeVolumeTrendUseCase.swift
+│   │   └── ComputePRUseCase.swift
+│   └── Repositories/
+│       ├── ExerciseRepository.swift    # Protocol only
+│       ├── SessionRepository.swift     # Protocol only
+│       └── SetRepository.swift         # Protocol only
+│
+├── Data/                               # Data Access Layer
+│   ├── SwiftDataModels/
+│   │   ├── ExerciseModel.swift         # @Model class
+│   │   ├── WorkoutSessionModel.swift   # @Model class
+│   │   └── SetRecordModel.swift        # @Model class
+│   ├── Repositories/
+│   │   ├── ExerciseRepositoryImpl.swift
+│   │   ├── SessionRepositoryImpl.swift
+│   │   └── SetRepositoryImpl.swift
+│   └── Mappers/
+│       ├── ExerciseMapper.swift        # Domain ↔ Data conversion
+│       └── SessionMapper.swift
+│
+├── Shared/
+│   └── Extensions/
+│       └── DateExtensions.swift
+│
+└── Tests/
+    ├── DomainTests/                    # Unit tests
+    │   ├── WeeklyBucketTests.swift
+    │   ├── DailyTrendAxisTests.swift
+    │   └── ExerciseRepositorySearchTests.swift
+    └── UITests/                        # UI automation tests
+        └── SessionFlowTests.swift</code></pre>
+
+        <h3>2.3 Layer Responsibilities</h3>
+
+        <h4>Presentation Layer</h4>
+        <ul>
+            <li>SwiftUI views and navigation</li>
+            <li><code>@Observable</code> ViewModels (state management)</li>
+            <li>User interaction handling (button taps, form input)</li>
+            <li>UI state (loading, errors, success messages)</li>
+            <li><strong>Allowed imports:</strong> SwiftUI, Domain entities/use cases</li>
+        </ul>
+
+        <h4>Domain Layer (Pure Swift)</h4>
+        <ul>
+            <li>Business entities (structs/enums only)</li>
+            <li>Use cases (business logic operations)</li>
+            <li>Repository protocols (abstract data access)</li>
+            <li><strong>Forbidden imports:</strong> SwiftUI, SwiftData, Charts</li>
+            <li><strong>Goal:</strong> Framework-independent, 100% unit testable</li>
+        </ul>
+
+        <h4>Data Layer</h4>
+        <ul>
+            <li>SwiftData <code>@Model</code> classes</li>
+            <li>Repository implementations (RepositoryImpl)</li>
+            <li>Domain ↔ Data mappers</li>
+            <li>ModelContext management</li>
+            <li><strong>Allowed imports:</strong> SwiftData, Foundation, Domain protocols</li>
+        </ul>
+
+        <div class="alert alert-warning">
+            <div class="alert-title">Critical Rule</div>
+            <p>
+                The Domain layer must <strong>NEVER</strong> import SwiftUI or SwiftData.
+                If you find yourself writing <code>import SwiftUI</code> in a Domain file,
+                you're violating Clean Architecture principles.
+            </p>
+        </div>
+    </section>
+
+    <!-- SECTION 3: SWIFTDATA -->
+    <section id="swiftdata">
+        <h2>3. SwiftData Models & CRUD Operations</h2>
+
+        <h3>3.1 SwiftData Model Example</h3>
+        <pre><code>import SwiftData
+import Foundation
+
+@Model
+final class ExerciseModel {
+    @Attribute(.unique) var id: String
+    var name: String
+    var mainRaw: String  // ExerciseCategoryMain.rawValue
+    var lastUsedDate: Date?
+
+    init(id: String, name: String, mainRaw: String, lastUsedDate: Date? = nil) {
+        self.id = id
+        self.name = name
+        self.mainRaw = mainRaw
+        self.lastUsedDate = lastUsedDate
+    }
+}</code></pre>
+
+        <h3>3.2 Data Relationships</h3>
+        <div class="diagram">WorkoutSession (1) ─────────── (N) SetRecord
+   ↓                              ↓
+   │                         exerciseID
+   │                              ↓
+   └─────────────────────────→ Exercise (1)
+
+<strong>Relationship Strategy:</strong>
+• SwiftData uses ID-based references (not @Relationship)
+• Each SetRecord stores sessionID and exerciseID as Strings
+• Queries join data by filtering on these ID fields</div>
+
+        <h3>3.3 CRUD Examples</h3>
+
+        <h4>Create (Insert)</h4>
+        <pre><code>func upsert(_ exercise: Exercise) async throws {
+    let exerciseID = exercise.id
+    let predicate = #Predicate&lt;ExerciseModel&gt; { $0.id == exerciseID }
+    var descriptor = FetchDescriptor&lt;ExerciseModel&gt;(predicate: predicate)
+    descriptor.fetchLimit = 1  // ⚠️ Property, not constructor param
+
+    if let existing = try context.fetch(descriptor).first {
+        // Update existing
+        existing.name = exercise.name
+        existing.mainRaw = exercise.main.rawValue
+    } else {
+        // Insert new
+        let model = ExerciseModel.fromDomain(exercise)
+        context.insert(model)
+    }
+
+    try context.save()  // Persist to disk
+}</code></pre>
+
+        <h4>Read (Fetch with Predicate)</h4>
+        <pre><code>func fetch(by id: String) async throws -> Exercise? {
+    let exerciseID = id
+    let predicate = #Predicate&lt;ExerciseModel&gt; { $0.id == exerciseID }
+    var descriptor = FetchDescriptor&lt;ExerciseModel&gt;(predicate: predicate)
+    descriptor.fetchLimit = 1
+
+    guard let model = try context.fetch(descriptor).first else {
+        return nil
+    }
+
+    return model.toDomain()  // Convert to Domain entity
+}</code></pre>
+
+        <h4>Update (Modify Existing)</h4>
+        <pre><code>// Fetch → Modify → Save pattern
+let predicate = #Predicate&lt;WorkoutSessionModel&gt; { $0.id == sessionID }
+var descriptor = FetchDescriptor&lt;WorkoutSessionModel&gt;(predicate: predicate)
+descriptor.fetchLimit = 1
+
+if let session = try context.fetch(descriptor).first {
+    session.notes = "Updated notes"
+    try context.save()
+}</code></pre>
+
+        <h4>Delete</h4>
+        <pre><code>func delete(id: String) async throws {
+    let exerciseID = id
+    let predicate = #Predicate&lt;ExerciseModel&gt; { $0.id == exerciseID }
+    var descriptor = FetchDescriptor&lt;ExerciseModel&gt;(predicate: predicate)
+    descriptor.fetchLimit = 1
+
+    if let exercise = try context.fetch(descriptor).first {
+        context.delete(exercise)
+        try context.save()
+    }
+}</code></pre>
+
+        <h3>3.4 SwiftData Constraints & Gotchas</h3>
+        <div class="alert alert-danger">
+            <div class="alert-title">SwiftData KeyPath Limitations</div>
+            <p><strong>❌ FORBIDDEN (will crash at runtime):</strong></p>
+            <ul>
+                <li><code>\.name.localizedLowercase</code> — Value-type member chaining</li>
+                <li><code>\.name.lowercased()</code> — Method calls on value types</li>
+                <li><code>#Predicate { $0.name.contains("search") }</code> — Case-sensitive only</li>
+            </ul>
+            <p><strong>✅ ALLOWED:</strong></p>
+            <ul>
+                <li><code>\.name</code> — Stored properties only</li>
+                <li><code>\.id</code></li>
+                <li><code>\.lastUsedDate</code></li>
+            </ul>
+            <p><strong>Solution:</strong> Fetch all, then filter client-side with <code>.filter { $0.name.localizedStandardContains(query) }</code></p>
+        </div>
+
+        <div class="alert alert-warning">
+            <div class="alert-title">FetchDescriptor.fetchLimit is a Property</div>
+            <p>
+                Unlike Core Data, SwiftData's <code>FetchDescriptor.fetchLimit</code> is NOT a constructor parameter.
+            </p>
+            <pre><code>// ❌ WRONG
+let descriptor = FetchDescriptor&lt;ExerciseModel&gt;(
+    predicate: predicate,
+    fetchLimit: 10  // Compile error!
+)
+
+// ✅ CORRECT
+var descriptor = FetchDescriptor&lt;ExerciseModel&gt;(predicate: predicate)
+descriptor.fetchLimit = 10  // Set as property</code></pre>
+        </div>
+    </section>
+
+    <!-- SECTION 4: VIEWMODEL -->
+    <section id="viewmodel">
+        <h2>4. ViewModel Pattern with Observation Framework</h2>
+
+        <h3>4.1 @Observable (iOS 17+)</h3>
+        <p>
+            The Observation framework replaces <code>@ObservableObject</code> and <code>@Published</code>
+            with a simpler <code>@Observable</code> macro. Changes to properties are automatically tracked,
+            and SwiftUI views re-render when observed state changes.
+        </p>
+
+        <h3>4.2 ViewModel Example</h3>
+        <pre><code>import Foundation
+import Observation
+
+@Observable
+@MainActor
+final class TrendsViewModel {
+    var trendData: [VolumeTrendPoint] = []
+    var scope: TrendScope = .daily
+    var selectedCategory: ExerciseCategoryMain?
+    var showAllDays: Bool = false
+    var isLoading: Bool = false
+
+    private let computeTrendUseCase: ComputeVolumeTrendUseCase
+
+    init(computeTrendUseCase: ComputeVolumeTrendUseCase) {
+        self.computeTrendUseCase = computeTrendUseCase
+    }
+
+    func onAppear() {
+        Task {
+            await loadTrends()
+        }
+    }
+
+    func scopeChanged() {
+        Task {
+            await loadTrends()
+        }
+    }
+
+    func categoryFilterChanged() {
+        Task {
+            await loadTrends()
+        }
+    }
+
+    private func loadTrends() async {
+        isLoading = true
+        do {
+            trendData = try await computeTrendUseCase(
+                scope: scope,
+                categoryFilter: selectedCategory,
+                includeZeroDays: showAllDays
+            )
+            isLoading = false
+        } catch {
+            print("Error loading trends: \(error)")
+            isLoading = false
+        }
+    }
+}</code></pre>
+
+        <h3>4.3 SwiftUI View Integration</h3>
+        <pre><code>struct TrendsView: View {
+    @State var vm: TrendsViewModel  // ⚠️ Use @State, not @StateObject
+
+    init(viewModel: TrendsViewModel) {
+        _vm = State(initialValue: viewModel)  // Underscore syntax
+    }
+
+    var body: some View {
+        VStack {
+            // Scope picker
+            Picker("Scope", selection: $vm.scope) {
+                Text("Daily").tag(TrendScope.daily)
+                Text("Weekly").tag(TrendScope.weekly)
+                Text("Monthly").tag(TrendScope.monthly)
+            }
+            .onChange(of: vm.scope) { _, _ in
+                vm.scopeChanged()
+            }
+
+            // Chart
+            if vm.isLoading {
+                ProgressView()
+            } else {
+                Chart(vm.trendData) { point in
+                    LineMark(
+                        x: .value("Date", point.date),
+                        y: .value("Volume", point.volume)
+                    )
+                }
+            }
+        }
+        .task {
+            vm.onAppear()
+        }
+    }
+}</code></pre>
+
+        <div class="alert alert-info">
+            <div class="alert-title">@MainActor Requirement</div>
+            <p>
+                ViewModels must be annotated with <code>@MainActor</code> to ensure all state
+                updates happen on the main thread. This is required for SwiftUI reactivity.
+            </p>
+        </div>
+    </section>
+
+    <!-- SECTION 5: TRENDS -->
+    <section id="trends">
+        <h2>5. Trends Calculation (Daily/Weekly/Monthly)</h2>
+
+        <h3>5.1 Volume Definition</h3>
+        <p><strong>Volume = weight (kg) × repetitions</strong></p>
+        <p>Example: 100kg × 10 reps = 1000kg volume</p>
+
+        <h3>5.2 Trend Specifications</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Scope</th>
+                    <th>Period</th>
+                    <th>Max Points</th>
+                    <th>Zero Days?</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Daily</strong></td>
+                    <td>Last 30 days</td>
+                    <td>≤10</td>
+                    <td>Optional (toggle)</td>
+                    <td>Two-line labels: month / day</td>
+                </tr>
+                <tr>
+                    <td><strong>Weekly</strong></td>
+                    <td>Last 8 weeks</td>
+                    <td>8</td>
+                    <td>Yes (always)</td>
+                    <td>Sunday-Saturday buckets, day-range labels</td>
+                </tr>
+                <tr>
+                    <td><strong>Monthly</strong></td>
+                    <td>Last 6 months</td>
+                    <td>6</td>
+                    <td>Yes (always)</td>
+                    <td>Single-line labels (e.g., "Oct")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>5.3 Weekly Bucket Calculation</h3>
+        <p>
+            Weekly trends use <strong>Sunday-Saturday</strong> calendar weeks (not Monday-start ISO weeks).
+            This aligns with typical user workout planning.
+        </p>
+        <pre><code>private func makeCalendar(for scope: TrendScope) -> Calendar {
+    switch scope {
+    case .weekly:
+        // Sunday-Saturday weeks (firstWeekday = 1 means Sunday)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.firstWeekday = 1
+        return calendar
+    case .daily, .monthly:
+        // ISO 8601 for other scopes (Monday-start)
+        return Calendar(identifier: .iso8601)
+    }
+}</code></pre>
+
+        <h3>5.4 Daily Trend Capping (≤10 Points)</h3>
+        <pre><code>// Generate all points from last 30 days
+let allPoints = volumeByPeriod.keys.sorted().map { periodStart in
+    VolumeTrendPoint(
+        date: periodStart,
+        volume: volumeByPeriod[periodStart] ?? 0,
+        periodLabel: formatter.string(from: periodStart)
+    )
+}
+
+// For daily scope: cap to latest 10 points
+if scope == .daily {
+    return Array(allPoints.suffix(10))  // Keep last 10 only
+} else {
+    return allPoints
+}</code></pre>
+
+        <h3>5.5 Category Filtering</h3>
+        <pre><code>// Apply category filter during volume aggregation
+for set in sets {
+    if let filter = categoryFilter {
+        if let exercise = try await exerciseRepo.fetch(by: set.exerciseID) {
+            if exercise.main != filter {
+                continue  // Skip sets not matching filter
+            }
+        }
+    }
+    volumeByPeriod[periodStart, default: 0] += set.volume
+}</code></pre>
+
+        <div class="alert alert-success">
+            <div class="alert-title">Accessibility: Two-Line Axis Labels</div>
+            <p>
+                Daily and Weekly trends use custom two-line x-axis labels for clarity:
+            </p>
+            <ul>
+                <li><strong>Daily:</strong> Top = "Oct" (abbreviated month), Bottom = "9" (day)</li>
+                <li><strong>Weekly:</strong> Top = "Oct" (month), Bottom = "6–12" (day range for Sun–Sat)</li>
+                <li><strong>VoiceOver:</strong> Combined label reads "October 9th" or "October 6 to October 12"</li>
+            </ul>
+            <p>Implementation uses <code>AxisValueLabel(content: { })</code> to force ViewBuilder overload.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 6: TESTING -->
+    <section id="testing">
+        <h2>6. Running Tests & Build Commands</h2>
+
+        <h3>6.1 Prerequisites</h3>
+        <div class="command">sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer</div>
+        <p>Ensure xcodebuild uses full Xcode.app, not just Command Line Tools.</p>
+
+        <h3>6.2 Build Commands</h3>
+        <div class="command">xcodebuild -scheme workout_log -destination 'platform=iOS Simulator,name=iPhone 16' clean build</div>
+
+        <h3>6.3 Run All Tests</h3>
+        <div class="command">xcodebuild -scheme workout_log -destination 'platform=iOS Simulator,name=iPhone 16' test</div>
+
+        <h3>6.4 Run Specific Test Class</h3>
+        <div class="command">xcodebuild -scheme workout_log -destination 'platform=iOS Simulator,name=iPhone 16' test -only-testing:workout_logTests/WeeklyBucketTests</div>
+
+        <h3>6.5 Code Coverage</h3>
+        <div class="command">xcodebuild -scheme workout_log -destination 'platform=iOS Simulator,name=iPhone 16' test -enableCodeCoverage YES</div>
+
+        <h3>6.6 Key Test Files</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Test File</th>
+                    <th>Purpose</th>
+                    <th>Key Assertions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>WeeklyBucketTests</td>
+                    <td>Verify Sunday-Saturday aggregation</td>
+                    <td>Sessions from Sun-Sat aggregate to same bucket</td>
+                </tr>
+                <tr>
+                    <td>DailyTrendAxisTests</td>
+                    <td>Validate ≤10 points cap</td>
+                    <td>15 days of data returns exactly 10 points</td>
+                </tr>
+                <tr>
+                    <td>ExerciseRepositorySearchTests</td>
+                    <td>Client-side filtering</td>
+                    <td>Search works without KeyPath chaining</td>
+                </tr>
+                <tr>
+                    <td>SessionListViewModelTests</td>
+                    <td>ViewModel state management</td>
+                    <td>Loading state, error handling, data flow</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert alert-success">
+            <div class="alert-title">Success Criteria</div>
+            <ul>
+                <li>All tests pass (green checkmarks)</li>
+                <li>No runtime crashes</li>
+                <li>Code coverage >70% in Domain and Data layers</li>
+                <li>Zero compiler warnings</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SECTION 7: TROUBLESHOOTING -->
+    <section id="troubleshooting">
+        <h2>7. Common Errors & Solutions</h2>
+
+        <h3>7.1 SwiftData KeyPath Chaining Error</h3>
+        <div class="alert alert-danger">
+            <div class="alert-title">Runtime Crash</div>
+            <pre>SwiftData/Schema.swift:336: Fatal error: Invalid KeyPath name.localizedLowercase
+on ExerciseModel points to a value type: String but has additional descendant</pre>
+        </div>
+
+        <h4>Cause</h4>
+        <p>
+            SwiftData's <code>#Predicate</code> and <code>SortDescriptor</code> only support
+            <strong>stored property KeyPaths</strong>. Chaining to computed properties or methods
+            on value types (like <code>\.name.localizedLowercase</code>) is forbidden.
+        </p>
+
+        <h4>❌ WRONG CODE</h4>
+        <pre><code>let predicate = #Predicate&lt;ExerciseModel&gt; { model in
+    model.name.localizedLowercase.contains(query)  // CRASH!
+}
+
+let sort = [SortDescriptor(\.name.localizedLowercase)]  // CRASH!</code></pre>
+
+        <h4>✅ CORRECT FIX</h4>
+        <pre><code>// Fetch all, then filter client-side
+let sort = [SortDescriptor(\ExerciseModel.name, order: .forward)]
+var descriptor = FetchDescriptor&lt;ExerciseModel&gt;(sortBy: sort)
+descriptor.fetchLimit = 200
+
+return try context.fetch(descriptor)
+    .filter { $0.name.localizedStandardContains(query) }  // Client-side!
+    .map { $0.toDomain() }</code></pre>
+
+        <h3>7.2 AxisValueLabel Overload Ambiguity</h3>
+        <div class="alert alert-danger">
+            <div class="alert-title">Compile Error</div>
+            <pre>Type '() -> ()' cannot conform to 'StringProtocol'</pre>
+        </div>
+
+        <h4>Cause</h4>
+        <p>
+            Swift's overload resolution chooses the <strong>String-based initializer</strong>
+            instead of the ViewBuilder content initializer when using trailing closure syntax
+            <code>AxisValueLabel { }</code>.
+        </p>
+
+        <h4>✅ SOLUTION</h4>
+        <pre><code>// ❌ WRONG (ambiguous overload)
+AxisValueLabel {
+    if let date = value.as(Date.self) {
+        VStack {
+            Text(date, format: .dateTime.month(.abbreviated))
+            Text(date, format: .dateTime.day())
+        }
+    }
+}
+
+// ✅ CORRECT (explicit content parameter)
+AxisValueLabel(content: {
+    if let date = value.as(Date.self) {
+        VStack {
+            Text(date, format: .dateTime.month(.abbreviated))
+            Text(date, format: .dateTime.day())
+        }
+        .accessibilityLabel(date.formatted(.dateTime.month(.wide).day()))
+    }
+})</code></pre>
+
+        <h3>7.3 Target Membership Issues</h3>
+        <div class="alert alert-danger">
+            <div class="alert-title">Compile Error</div>
+            <pre>Cannot find 'ExerciseRepositoryImpl' in scope</pre>
+        </div>
+
+        <h4>Solution</h4>
+        <ol>
+            <li>Select the file in Xcode Navigator</li>
+            <li>Open File Inspector (⌥⌘1)</li>
+            <li>Check <strong>Target Membership</strong>:
+                <ul>
+                    <li>App code: <code>workout_log</code></li>
+                    <li>Test code: <code>workout_logTests</code></li>
+                </ul>
+            </li>
+            <li>Clean Build Folder (⇧⌘K) and rebuild</li>
+        </ol>
+
+        <h3>7.4 ViewBuilder Assignment Statement Error</h3>
+        <div class="alert alert-danger">
+            <div class="alert-title">Compile Error</div>
+            <pre>Cannot assign value inside @ViewBuilder closure</pre>
+        </div>
+
+        <h4>Cause</h4>
+        <p>
+            SwiftUI's <code>@ViewBuilder</code> closures cannot contain assignment statements
+            (e.g., <code>let a11yLabel: String = ...</code>) directly. Assignment must happen
+            <strong>before</strong> the ViewBuilder or inside an <code>if let</code>.
+        </p>
+
+        <h4>✅ SOLUTION</h4>
+        <pre><code>// ❌ WRONG (assignment inside ViewBuilder)
+AxisValueLabel(content: {
+    let a11yLabel: String = "October 9th"  // ERROR!
+    VStack {
+        Text("Oct")
+    }
+    .accessibilityLabel(a11yLabel)
+})
+
+// ✅ CORRECT (assignment inside if let)
+AxisValueLabel(content: {
+    if let date = value.as(Date.self) {
+        let a11yLabel: String = date.formatted(.dateTime.month(.wide).day())
+        VStack {
+            Text(date, format: .dateTime.month(.abbreviated))
+        }
+        .accessibilityLabel(a11yLabel)
+    }
+})</code></pre>
+    </section>
+
+    <!-- SECTION 8: GLOSSARY -->
+    <section id="glossary">
+        <h2>8. Glossary of Terms</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Term</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Set</strong></td>
+                    <td>A single execution of an exercise (e.g., Bench Press 100kg × 10 reps)</td>
+                </tr>
+                <tr>
+                    <td><strong>Reps (Repetitions)</strong></td>
+                    <td>Number of times an exercise is performed in one set</td>
+                </tr>
+                <tr>
+                    <td><strong>Volume</strong></td>
+                    <td>Weight × Reps (e.g., 100kg × 10 = 1000kg volume)</td>
+                </tr>
+                <tr>
+                    <td><strong>Session</strong></td>
+                    <td>A complete workout on a specific date (contains multiple sets)</td>
+                </tr>
+                <tr>
+                    <td><strong>Exercise</strong></td>
+                    <td>A named movement (e.g., Squat, Bench Press, Deadlift)</td>
+                </tr>
+                <tr>
+                    <td><strong>Category</strong></td>
+                    <td>Muscle group classification (Lower Body, Upper Body, Cardio, etc.)</td>
+                </tr>
+                <tr>
+                    <td><strong>PR (Personal Record)</strong></td>
+                    <td>Your best performance for a given exercise (usually heaviest weight or highest 1RM)</td>
+                </tr>
+                <tr>
+                    <td><strong>1RM (One-Rep Max)</strong></td>
+                    <td>Maximum weight you can lift for one repetition</td>
+                </tr>
+                <tr>
+                    <td><strong>Entity</strong></td>
+                    <td>Domain layer business object (struct/enum)</td>
+                </tr>
+                <tr>
+                    <td><strong>Use Case</strong></td>
+                    <td>Encapsulated business operation (e.g., CreateSession, ComputeVolumeTrend)</td>
+                </tr>
+                <tr>
+                    <td><strong>Repository</strong></td>
+                    <td>Data access abstraction layer (protocol in Domain, implementation in Data)</td>
+                </tr>
+                <tr>
+                    <td><strong>ViewModel</strong></td>
+                    <td>Intermediary between View and Domain, marked with @Observable</td>
+                </tr>
+                <tr>
+                    <td><strong>Model</strong></td>
+                    <td>SwiftData persistent object (class marked with @Model)</td>
+                </tr>
+                <tr>
+                    <td><strong>DI (Dependency Injection)</strong></td>
+                    <td>Pattern where dependencies are provided to objects rather than created internally</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- SECTION 9: RESOURCES -->
+    <section id="resources">
+        <h2>9. Additional Resources & Links</h2>
+
+        <h3>9.1 Official Documentation</h3>
+        <ul>
+            <li><strong>README:</strong> <a href="https://github.com/jungseok-corine/WorkOut_Log/blob/main/README.md">GitHub README</a></li>
+            <li><strong>Privacy Policy:</strong> <a href="https://github.com/jungseok-corine/WorkOut_Log/blob/main/AppStore/PrivacyPolicy.md">AppStore/PrivacyPolicy.md</a></li>
+            <li><strong>Developer Guide:</strong> <code>Docs/workout_log_guide.md</code></li>
+        </ul>
+
+        <h3>9.2 Architecture Decision Records (ADRs)</h3>
+        <ul>
+            <li><a href="../ADR/ADR-001-storage-swiftdata.md">ADR-001: SwiftData Adoption</a></li>
+            <li><a href="../ADR/ADR-002-architecture-clean.md">ADR-002: Clean Architecture Principles</a></li>
+            <li><a href="../ADR/ADR-003-iso-week-aggregation.md">ADR-003: Sunday-Saturday Week Buckets</a> (updated from ISO)</li>
+            <li><a href="../ADR/ADR-004-pr-definition.md">ADR-004: Personal Record Definition (Epley Formula)</a></li>
+        </ul>
+
+        <h3>9.3 External References</h3>
+        <ul>
+            <li><strong>SwiftData Documentation:</strong> <a href="https://developer.apple.com/documentation/swiftdata">Apple Developer</a></li>
+            <li><strong>Observation Framework:</strong> <a href="https://developer.apple.com/documentation/observation">Apple Developer</a></li>
+            <li><strong>Swift Charts:</strong> <a href="https://developer.apple.com/documentation/charts">Apple Developer</a></li>
+            <li><strong>Clean Architecture:</strong> <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">Uncle Bob Martin</a></li>
+            <li><strong>Conventional Commits:</strong> <a href="https://www.conventionalcommits.org/">conventionalcommits.org</a></li>
+        </ul>
+
+        <h3>9.4 Support</h3>
+        <ul>
+            <li><strong>Email:</strong> fiverights99@gmail.com</li>
+            <li><strong>GitHub Issues:</strong> <a href="https://github.com/jungseok-corine/WorkOut_Log/issues">Open an issue</a></li>
+            <li><strong>GitHub Discussions:</strong> <a href="https://github.com/jungseok-corine/WorkOut_Log/discussions">Join discussions</a></li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Oh Jungseok (Ben) — All rights reserved</p>
+        <p>Built with Swift 6, SwiftUI, SwiftData, and Clean Architecture</p>
+        <p>Architecture guidance by Claude (Anthropic AI Assistant)</p>
+        <p class="no-print"><strong>💡 Tip:</strong> Save this document as PDF via <kbd>Cmd+P</kbd> → "Save as PDF" for offline reference</p>
+    </footer>
+</body>
+</html>

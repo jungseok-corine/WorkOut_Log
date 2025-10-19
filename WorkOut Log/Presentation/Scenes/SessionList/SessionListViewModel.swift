@@ -34,8 +34,9 @@ final class SessionListViewModel {
         let repo = c.sessionRepo
         let list = try? await repo.fetchRange(start: start, end: end)
 
-        let ui = await withTaskGroup(of: SessionUI?.self) { group -> [SessionUI] in
-            for s in list ?? [] {
+        // Preserve repository sort order (date DESC, id ASC) by using indexed dictionary
+        let ui = await withTaskGroup(of: (Int, SessionUI?).self) { group -> [SessionUI] in
+            for (index, s) in (list ?? []).enumerated() {
                 group.addTask { [c] in
                     let sets = try? await repo.fetchSets(sessionID: s.id)
                     let vol = Int((sets ?? []).map { $0.weight * Double($0.reps) }.reduce(0,+))
@@ -48,22 +49,24 @@ final class SessionListViewModel {
                         }
                     }
 
-                    return SessionUI(
+                    let sessionUI = SessionUI(
                         id: s.id,
                         date: s.date,
                         totalVolume: vol,
                         categories: Array(categories).sorted { $0.rawValue < $1.rawValue }
                     )
+                    return (index, sessionUI)
                 }
             }
 
-            var result: [SessionUI] = []
-            for await sessionUI in group {
+            var resultDict: [Int: SessionUI] = [:]
+            for await (index, sessionUI) in group {
                 if let sessionUI = sessionUI {
-                    result.append(sessionUI)
+                    resultDict[index] = sessionUI
                 }
             }
-            return result
+            // Restore original order by sorting by index
+            return resultDict.sorted { $0.key < $1.key }.map { $0.value }
         }
         sessions = ui
     }
