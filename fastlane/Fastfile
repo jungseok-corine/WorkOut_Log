@@ -1,0 +1,169 @@
+# Fastlane Fastfile for WorkOut Log
+# This file contains the configuration for automating build, test, and deployment
+
+default_platform(:ios)
+
+platform :ios do
+  # ========================================
+  # CONFIGURATION
+  # ========================================
+
+  SCHEME = "workout_log"
+  XCODEPROJ = "WorkOut Log.xcodeproj"
+  OUTPUT_DIR = "build"
+
+  # ========================================
+  # LANES
+  # ========================================
+
+  desc "Run unit and UI tests"
+  lane :tests do
+    run_tests(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      device: "iPhone 16",
+      clean: true,
+      code_coverage: true
+    )
+  end
+
+  desc "Increment build number (CFBundleVersion) and commit"
+  lane :bump_build do
+    increment_build_number(xcodeproj: XCODEPROJ)
+
+    # Commit the version bump
+    build_number = get_build_number(xcodeproj: XCODEPROJ)
+    commit_version_bump(
+      message: "chore(ci): bump build number to #{build_number}",
+      xcodeproj: XCODEPROJ
+    )
+  end
+
+  desc "Build archive for App Store distribution (automatic signing)"
+  lane :build do
+    gym(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      export_method: "app-store",
+      skip_package_pkg: true,
+      include_bitcode: false,
+      include_symbols: true,
+      clean: true,
+      silent: false,
+      output_directory: OUTPUT_DIR,
+      export_options: {
+        provisioningProfiles: {
+          "com.Ben.WorkOut-Log" => "match AppStore com.Ben.WorkOut-Log"
+        }
+      }
+    )
+  end
+
+  desc "Upload to TestFlight (beta testing)"
+  lane :beta do
+    # Authenticate with App Store Connect API
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["ASC_KEY_CONTENT"]),
+      is_key_content_base64: false
+    )
+
+    # Increment build number
+    increment_build_number(xcodeproj: XCODEPROJ)
+    build_number = get_build_number(xcodeproj: XCODEPROJ)
+
+    # Run tests before building
+    run_tests(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      device: "iPhone 16",
+      clean: true
+    )
+
+    # Build archive
+    gym(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      export_method: "app-store",
+      clean: true,
+      output_directory: OUTPUT_DIR,
+      include_symbols: true,
+      export_options: {
+        provisioningProfiles: {
+          "com.Ben.WorkOut-Log" => "match AppStore com.Ben.WorkOut-Log"
+        }
+      }
+    )
+
+    # Upload to TestFlight
+    pilot(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true,
+      changelog: "Beta build #{build_number}\n\n- Bug fixes and improvements"
+    )
+
+    UI.success("✅ Successfully uploaded build #{build_number} to TestFlight!")
+  end
+
+  desc "Submit to App Store for review (manual review step)"
+  lane :release do
+    # Authenticate with App Store Connect API
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["ASC_KEY_CONTENT"]),
+      is_key_content_base64: false
+    )
+
+    # Build archive
+    gym(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      export_method: "app-store",
+      clean: true,
+      output_directory: OUTPUT_DIR,
+      include_symbols: true
+    )
+
+    # Upload to App Store Connect (but don't submit for review yet)
+    deliver(
+      api_key: api_key,
+      submit_for_review: false,
+      skip_metadata: true,
+      skip_screenshots: true,
+      force: true
+    )
+
+    UI.success("✅ Build uploaded to App Store Connect. Submit for review manually in App Store Connect.")
+  end
+
+  # ========================================
+  # HELPER LANES
+  # ========================================
+
+  desc "Clean derived data and build artifacts"
+  lane :clean do
+    clean_build_artifacts
+    clear_derived_data
+    UI.success("✅ Cleaned build artifacts and derived data")
+  end
+
+  desc "Run SwiftLint (if configured)"
+  lane :lint do
+    swiftlint(
+      mode: :lint,
+      executable: "Pods/SwiftLint/swiftlint",
+      raise_if_swiftlint_error: true
+    )
+  end
+
+  # ========================================
+  # ERROR HANDLING
+  # ========================================
+
+  error do |lane, exception|
+    UI.error("❌ Lane #{lane} failed with exception:")
+    UI.error(exception.message)
+  end
+end
