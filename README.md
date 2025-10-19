@@ -434,6 +434,63 @@ cd Docs && ./export.sh
 
 ---
 
+## 🚀 Continuous Integration & Deployment
+
+### Fastlane Setup
+
+This project uses [Fastlane](https://fastlane.tools) for automated building, testing, and deployment to TestFlight.
+
+**Prerequisites:**
+```bash
+# Install Ruby dependencies
+bundle install
+```
+
+**Available Lanes:**
+
+```bash
+# Run unit tests
+bundle exec fastlane tests
+
+# Increment build number and commit
+bundle exec fastlane bump_build
+
+# Build archive (automatic signing)
+bundle exec fastlane build
+
+# Upload to TestFlight (requires App Store Connect API key)
+bundle exec fastlane beta
+
+# Submit to App Store (manual review)
+bundle exec fastlane release
+```
+
+### GitHub Actions CI
+
+**Automated workflows:**
+- **Pull Requests** → Runs `bundle exec fastlane tests` on every PR
+- **Tag Pushes (`v*`)** → Builds and uploads to TestFlight automatically
+
+**To trigger TestFlight upload:**
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+**Required GitHub Secrets** (Settings → Secrets and variables → Actions):
+- `ASC_KEY_ID` — App Store Connect API Key ID
+- `ASC_ISSUER_ID` — Issuer ID
+- `ASC_KEY_CONTENT` — Base64-encoded .p8 file content
+
+**Get App Store Connect API Key:**
+1. Go to [App Store Connect → Users and Access → Keys](https://appstoreconnect.apple.com/access/api)
+2. Create a new API key with "App Manager" role
+3. Download the `.p8` file
+4. Convert to Base64: `base64 -i AuthKey_XXXXXXXXXX.p8 | pbcopy`
+5. Add to GitHub Secrets as `ASC_KEY_CONTENT`
+
+---
+
 ## 🤝 Contributing
 
 ### Development Workflow
