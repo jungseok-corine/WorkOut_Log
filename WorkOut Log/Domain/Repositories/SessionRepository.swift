@@ -12,6 +12,7 @@ public protocol SessionRepository {
     func update(session: WorkoutSession) async throws
     func delete(sessionID: String) async throws
     func fetch(by id: String) async throws -> WorkoutSession?
+    func fetchAll() async throws -> [WorkoutSession]
     func fetchRange(start: Date, end: Date) async throws -> [WorkoutSession]
     func latest() async throws -> WorkoutSession?
     // Sets

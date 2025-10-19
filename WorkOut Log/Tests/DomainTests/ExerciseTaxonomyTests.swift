@@ -9,42 +9,40 @@ import XCTest
 @testable import workout_log
 
 final class ExerciseTaxonomyTests: XCTestCase {
-    func test_upperBody_requires_upper_subcategory() {
-        let validExercise = Exercise(id: "1", name: "Bench Press", main: .upperBody, upper: .chest)
-        XCTAssertTrue(validExercise.isValid)
-
-        let invalidExercise = Exercise(id: "2", name: "Invalid", main: .upperBody, upper: nil)
-        XCTAssertFalse(invalidExercise.isValid)
+    func test_upperBody_exercise_creation() {
+        let exercise = Exercise(id: "1", name: "Bench Press", main: .upperBody)
+        XCTAssertEqual(exercise.id, "1")
+        XCTAssertEqual(exercise.name, "Bench Press")
+        XCTAssertEqual(exercise.main, .upperBody)
     }
 
-    func test_non_upperBody_must_not_have_upper() {
-        let validLower = Exercise(id: "1", name: "Squat", main: .lowerBody, upper: nil)
-        XCTAssertTrue(validLower.isValid)
+    func test_all_main_categories() {
+        let lowerExercise = Exercise(id: "1", name: "Squat", main: .lowerBody)
+        XCTAssertEqual(lowerExercise.main, .lowerBody)
 
-        let validCardio = Exercise(id: "2", name: "Running", main: .cardio, upper: nil)
-        XCTAssertTrue(validCardio.isValid)
+        let cardioExercise = Exercise(id: "2", name: "Running", main: .cardio)
+        XCTAssertEqual(cardioExercise.main, .cardio)
 
-        let validFull = Exercise(id: "3", name: "Burpee", main: .fullBody, upper: nil)
-        XCTAssertTrue(validFull.isValid)
+        let fullBodyExercise = Exercise(id: "3", name: "Burpee", main: .fullBody)
+        XCTAssertEqual(fullBodyExercise.main, .fullBody)
 
-        let invalidLower = Exercise(id: "4", name: "Invalid", main: .lowerBody, upper: .chest)
-        XCTAssertFalse(invalidLower.isValid)
+        let upperExercise = Exercise(id: "4", name: "Pull Up", main: .upperBody)
+        XCTAssertEqual(upperExercise.main, .upperBody)
     }
 
-    func test_upsert_validates_taxonomy() async throws {
+    func test_upsert_creates_exercise() async throws {
         let repo = InMemoryExerciseRepository()
         let useCase = UpsertExerciseUseCase(repo: repo)
 
-        // Valid: upperBody with upper subcategory
-        let validExercise = try await useCase(name: "Bench Press", main: .upperBody, upper: .chest)
-        XCTAssertEqual(validExercise.name, "Bench Press")
-        XCTAssertEqual(validExercise.main, .upperBody)
-        XCTAssertEqual(validExercise.upper, .chest)
+        // Test: upperBody exercise
+        let upperExercise = try await useCase(name: "Bench Press", main: .upperBody)
+        XCTAssertEqual(upperExercise.name, "Bench Press")
+        XCTAssertEqual(upperExercise.main, .upperBody)
 
-        // Valid: lowerBody without upper
-        let lowerExercise = try await useCase(name: "Squat", main: .lowerBody, upper: nil)
+        // Test: lowerBody exercise
+        let lowerExercise = try await useCase(name: "Squat", main: .lowerBody)
         XCTAssertEqual(lowerExercise.main, .lowerBody)
-        XCTAssertNil(lowerExercise.upper)
+        XCTAssertEqual(lowerExercise.name, "Squat")
     }
 
     func test_search_filters_by_main_category() async throws {
@@ -53,9 +51,9 @@ final class ExerciseTaxonomyTests: XCTestCase {
         let searchUC = SearchExercisesUseCase(repo: repo)
 
         // Create exercises
-        _ = try await upsertUC(name: "Bench Press", main: .upperBody, upper: .chest)
-        _ = try await upsertUC(name: "Squat", main: .lowerBody, upper: nil)
-        _ = try await upsertUC(name: "Deadlift", main: .lowerBody, upper: nil)
+        _ = try await upsertUC(name: "Bench Press", main: .upperBody)
+        _ = try await upsertUC(name: "Squat", main: .lowerBody)
+        _ = try await upsertUC(name: "Deadlift", main: .lowerBody)
 
         // Search by main category
         let upperResults = try await searchUC(query: "", main: .upperBody)
@@ -72,10 +70,6 @@ final class InMemoryExerciseRepository: ExerciseRepository {
     var exercises: [String: Exercise] = [:]
 
     func upsert(_ exercise: Exercise) async throws {
-        guard exercise.isValid else {
-            throw NSError(domain: "ExerciseRepository", code: 1,
-                         userInfo: [NSLocalizedDescriptionKey: "upperBody requires upper subcategory"])
-        }
         exercises[exercise.id] = exercise
     }
 
@@ -83,7 +77,7 @@ final class InMemoryExerciseRepository: ExerciseRepository {
         if nameLike.isEmpty {
             return Array(exercises.values)
         }
-        return exercises.values.filter { $0.name.localizedLowercase.contains(nameLike.lowercased()) }
+        return exercises.values.filter { $0.name.localizedStandardContains(nameLike) }
     }
 
     func recent(limit: Int) async throws -> [Exercise] {
@@ -94,15 +88,16 @@ final class InMemoryExerciseRepository: ExerciseRepository {
         return exercises.values.filter { $0.main == main }
     }
 
-    func fetchByUpper(_ upper: ExerciseCategoryUpper) async throws -> [Exercise] {
-        return exercises.values.filter { $0.upper == upper }
-    }
-
     func fetchAll() async throws -> [Exercise] {
         return Array(exercises.values)
     }
 
     func fetch(by id: String) async throws -> Exercise? {
         return exercises[id]
+    }
+
+    func hasReferencingSets(exerciseID: String) async throws -> Bool {
+        // For in-memory testing, always return false (no sets tracking)
+        return false
     }
 }

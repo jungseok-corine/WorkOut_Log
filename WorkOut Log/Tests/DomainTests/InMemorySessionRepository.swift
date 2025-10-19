@@ -16,11 +16,16 @@ final class InMemorySessionRepository: SessionRepository {
     func update(session: WorkoutSession) async throws { sessions[session.id] = session }
     func delete(sessionID: String) async throws { sessions.removeValue(forKey: sessionID); sets[sessionID] = [] }
     func fetch(by id: String) async throws -> WorkoutSession? { sessions[id] }
+    func fetchAll() async throws -> [WorkoutSession] {
+        sessions.values.sorted { $0.date > $1.date || ($0.date == $1.date && $0.id < $1.id) }
+    }
     func fetchRange(start: Date, end: Date) async throws -> [WorkoutSession] {
-        sessions.values.filter { $0.date >= start && $0.date < end }.sorted { $0.date > $1.date }
+        sessions.values
+            .filter { $0.date >= start && $0.date < end }
+            .sorted { $0.date > $1.date || ($0.date == $1.date && $0.id < $1.id) }
     }
     func latest() async throws -> WorkoutSession? {
-        sessions.values.sorted { $0.date > $1.date }.first
+        sessions.values.sorted { $0.date > $1.date || ($0.date == $1.date && $0.id < $1.id) }.first
     }
     func add(set: SetRecord) async throws { sets[set.sessionID, default: []].append(set) }
     func update(set: SetRecord) async throws {

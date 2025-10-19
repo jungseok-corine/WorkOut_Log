@@ -40,7 +40,7 @@ public struct ComputeVolumeTrendUseCase {
         categoryFilter: ExerciseCategoryMain? = nil,
         includeZeroDays: Bool = false
     ) async throws -> [VolumeTrendPoint] {
-        let calendar = Calendar(identifier: .iso8601)
+        let calendar = makeCalendar(for: scope)
         let now = Date()
 
         // Determine date range and periods
@@ -165,6 +165,22 @@ public struct ComputeVolumeTrendUseCase {
             return calendar.dateInterval(of: .weekOfYear, for: date)!.start
         case .monthly:
             return calendar.dateInterval(of: .month, for: date)!.start
+        }
+    }
+
+    /// Creates the appropriate calendar for the given scope
+    /// - Daily/Monthly: ISO 8601 (Monday-start) for consistency
+    /// - Weekly: Gregorian with Sunday-start (Sunday → Saturday weeks)
+    private func makeCalendar(for scope: TrendScope) -> Calendar {
+        switch scope {
+        case .weekly:
+            // Use Sunday-Saturday weeks (firstWeekday = 1 means Sunday)
+            var calendar = Calendar(identifier: .gregorian)
+            calendar.firstWeekday = 1 // Sunday = 1, Monday = 2, ..., Saturday = 7
+            return calendar
+        case .daily, .monthly:
+            // Keep ISO 8601 for daily and monthly (Monday-start doesn't affect these scopes)
+            return Calendar(identifier: .iso8601)
         }
     }
 }
