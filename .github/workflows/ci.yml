@@ -1,44 +1,59 @@
-name: CI
+name: iOS CI
 
 on:
-  push:
-    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [main, feat/week1-foundations]
+  push:
+    tags:
+      - "v*"
 
 jobs:
   test:
-    name: Unit Tests
-    runs-on: macos-latest
-
+    name: Run Tests
+    runs-on: macos-14
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Select Xcode
-      run: sudo xcode-select -s /Applications/Xcode_16.0.app
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
 
-    - name: Build and Test
-      run: |
-        xcodebuild -scheme "WorkOut Log" \
-                   -destination 'platform=iOS Simulator,name=iPhone 16' \
-                   clean build test
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app || sudo xcode-select -s /Applications/Xcode.app
 
-  ui-test:
-    name: UI Tests (Optional)
-    runs-on: macos-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Install dependencies
+        run: bundle install
 
+      - name: Run tests
+        run: bundle exec fastlane tests
+
+  beta:
+    name: Deploy to TestFlight
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: macos-14
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Select Xcode
-      run: sudo xcode-select -s /Applications/Xcode_16.0.app
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
 
-    - name: UI Test
-      run: |
-        xcodebuild -scheme "WorkOut Log" \
-                   -destination 'platform=iOS Simulator,name=iPhone 16' \
-                   clean build-for-testing test-without-building \
-                   -only-testing:WorkOut\ LogUITests
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app || sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Build and upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+        run: bundle exec fastlane beta
