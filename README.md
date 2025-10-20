@@ -434,60 +434,18 @@ cd Docs && ./export.sh
 
 ---
 
-## 🚀 Continuous Integration & Deployment
+## 🚀 CI/CD & Fastlane
 
-### Fastlane Setup
+이 프로젝트는 **Fastlane**을 사용하여 빌드, 테스트, TestFlight 배포를 자동화합니다. PR마다 자동으로 테스트가 실행되며, `v*` 태그를 푸시하면 GitHub Actions가 TestFlight에 자동으로 배포합니다.
 
-This project uses [Fastlane](https://fastlane.tools) for automated building, testing, and deployment to TestFlight.
+**📘 자세한 가이드**: [Docs/Fastlane_Guide.md](Docs/Fastlane_Guide.md) (환경 설정, 로컬 실행, CI 워크플로우, 트러블슈팅 포함)
 
-**Prerequisites:**
+**로컬 실행 (3 commands):**
 ```bash
-# Install Ruby dependencies
-bundle install
+bundle install                      # Ruby 의존성 설치
+bundle exec fastlane tests          # 테스트 실행
+bundle exec fastlane beta           # TestFlight 배포 (App Store Connect API 키 필요)
 ```
-
-**Available Lanes:**
-
-```bash
-# Run unit tests
-bundle exec fastlane tests
-
-# Increment build number and commit
-bundle exec fastlane bump_build
-
-# Build archive (automatic signing)
-bundle exec fastlane build
-
-# Upload to TestFlight (requires App Store Connect API key)
-bundle exec fastlane beta
-
-# Submit to App Store (manual review)
-bundle exec fastlane release
-```
-
-### GitHub Actions CI
-
-**Automated workflows:**
-- **Pull Requests** → Runs `bundle exec fastlane tests` on every PR
-- **Tag Pushes (`v*`)** → Builds and uploads to TestFlight automatically
-
-**To trigger TestFlight upload:**
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-**Required GitHub Secrets** (Settings → Secrets and variables → Actions):
-- `ASC_KEY_ID` — App Store Connect API Key ID
-- `ASC_ISSUER_ID` — Issuer ID
-- `ASC_KEY_CONTENT` — Base64-encoded .p8 file content
-
-**Get App Store Connect API Key:**
-1. Go to [App Store Connect → Users and Access → Keys](https://appstoreconnect.apple.com/access/api)
-2. Create a new API key with "App Manager" role
-3. Download the `.p8` file
-4. Convert to Base64: `base64 -i AuthKey_XXXXXXXXXX.p8 | pbcopy`
-5. Add to GitHub Secrets as `ASC_KEY_CONTENT`
 
 ---
 

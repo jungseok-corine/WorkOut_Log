@@ -149,8 +149,49 @@ platform :ios do
       api_key: api_key,
       submit_for_review: true,
       force: true,
-      skip_metadata: false,
-      skip_screenshots: false,  # Screenshots ready in fastlane/metadata/ko-KR/screenshots/
+      skip_metadata: true,  # Skip metadata upload to avoid localization conflicts
+      skip_screenshots: true,  # Skip screenshots upload for now
+      automatic_release: false,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false
+      }
+    )
+
+    UI.success("✅ Successfully submitted version #{version} (#{build_number}) for App Store review!")
+    UI.message("📋 Next steps:")
+    UI.message("   1. Check App Store Connect for submission status")
+    UI.message("   2. Review time: typically 24-48 hours")
+    UI.message("   3. App will go live after manual release approval")
+  end
+
+  desc "Submit existing build for App Store review (no build/upload)"
+  lane :submit_only do
+    # Authenticate with App Store Connect API
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["ASC_KEY_CONTENT"]),
+      is_key_content_base64: false
+    )
+
+    # Get current version info
+    version = get_version_number(xcodeproj: XCODEPROJ, target: "WorkOut Log")
+    build_number = get_info_plist_value(
+      path: "WorkOut-Log-Info.plist",
+      key: "CFBundleVersion"
+    )
+
+    UI.header("📤 Submitting existing build #{version} (#{build_number}) for App Store review")
+
+    # Submit for review without uploading (assumes build already exists)
+    deliver(
+      api_key: api_key,
+      submit_for_review: true,
+      force: true,
+      skip_binary_upload: true,  # Skip binary upload - use existing build
+      skip_metadata: true,
+      skip_screenshots: true,
       automatic_release: false,
       precheck_include_in_app_purchases: false,
       submission_information: {
