@@ -150,7 +150,7 @@ platform :ios do
       submit_for_review: true,
       force: true,
       skip_metadata: false,
-      skip_screenshots: true,  # Set to false if screenshots are ready
+      skip_screenshots: false,  # Screenshots ready in fastlane/metadata/ko-KR/screenshots/
       automatic_release: false,
       precheck_include_in_app_purchases: false,
       submission_information: {
