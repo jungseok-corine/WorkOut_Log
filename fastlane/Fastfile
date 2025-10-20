@@ -1,0 +1,272 @@
+# Fastlane Fastfile for WorkOut Log
+# This file contains the configuration for automating build, test, and deployment
+
+default_platform(:ios)
+
+platform :ios do
+  # ========================================
+  # CONFIGURATION
+  # ========================================
+
+  SCHEME = "workout_log"
+  XCODEPROJ = "WorkOut Log.xcodeproj"
+  OUTPUT_DIR = "build"
+
+  # ========================================
+  # LANES
+  # ========================================
+
+  desc "Run unit and UI tests"
+  lane :tests do
+    run_tests(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      device: "iPhone 16",
+      clean: true,
+      code_coverage: true
+    )
+  end
+
+  desc "Increment build number (CFBundleVersion) and commit"
+  lane :bump_build do
+    increment_build_number(xcodeproj: XCODEPROJ)
+
+    # Commit the version bump
+    build_number = get_build_number(xcodeproj: XCODEPROJ)
+    commit_version_bump(
+      message: "chore(ci): bump build number to #{build_number}",
+      xcodeproj: XCODEPROJ
+    )
+  end
+
+  desc "Build archive for App Store distribution (automatic signing)"
+  lane :build do
+    gym(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      export_method: "app-store",
+      skip_package_pkg: true,
+      include_bitcode: false,
+      include_symbols: true,
+      clean: true,
+      silent: false,
+      output_directory: OUTPUT_DIR,
+      export_options: {
+        signingStyle: "automatic",
+        teamID: "8CKPNKA3V9"
+      }
+    )
+  end
+
+  desc "Upload to TestFlight (beta testing)"
+  lane :beta do
+    # Authenticate with App Store Connect API
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["ASC_KEY_CONTENT"]),
+      is_key_content_base64: false
+    )
+
+    # Get current build number (manual versioning - increment in Xcode)
+    build_number = get_info_plist_value(
+      path: "WorkOut-Log-Info.plist",
+      key: "CFBundleVersion"
+    )
+
+    # Skip tests for now (run manually or in CI)
+    # run_tests(
+    #   project: XCODEPROJ,
+    #   scheme: SCHEME,
+    #   device: "iPhone 16",
+    #   clean: true
+    # )
+
+    # Build archive (using Xcode automatic signing)
+    gym(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      export_method: "app-store",
+      clean: true,
+      output_directory: OUTPUT_DIR,
+      include_symbols: true,
+      export_options: {
+        signingStyle: "automatic",
+        teamID: "8CKPNKA3V9"
+      }
+    )
+
+    # Upload to TestFlight
+    pilot(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true,
+      changelog: "Beta build #{build_number}\n\n- Bug fixes and improvements"
+    )
+
+    UI.success("✅ Successfully uploaded build #{build_number} to TestFlight!")
+  end
+
+  desc "Submit to App Store for review with Korean metadata"
+  lane :release do
+    # Authenticate with App Store Connect API
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["ASC_KEY_CONTENT"]),
+      is_key_content_base64: false
+    )
+
+    # Verify export compliance before building
+    check_export_compliance
+
+    # Get current version info
+    version = get_version_number(xcodeproj: XCODEPROJ, target: "WorkOut Log")
+    build_number = get_info_plist_value(
+      path: "WorkOut-Log-Info.plist",
+      key: "CFBundleVersion"
+    )
+
+    UI.header("📦 Building version #{version} (#{build_number}) for App Store")
+
+    # Build archive (using Xcode automatic signing)
+    gym(
+      project: XCODEPROJ,
+      scheme: SCHEME,
+      export_method: "app-store",
+      clean: true,
+      output_directory: OUTPUT_DIR,
+      include_symbols: true,
+      export_options: {
+        signingStyle: "automatic",
+        teamID: "8CKPNKA3V9"
+      }
+    )
+
+    UI.header("📤 Uploading to App Store Connect and submitting for review")
+
+    # Upload to App Store Connect and submit for review
+    deliver(
+      api_key: api_key,
+      submit_for_review: true,
+      force: true,
+      skip_metadata: true,  # Skip metadata upload to avoid localization conflicts
+      skip_screenshots: true,  # Skip screenshots upload for now
+      automatic_release: false,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false
+      }
+    )
+
+    UI.success("✅ Successfully submitted version #{version} (#{build_number}) for App Store review!")
+    UI.message("📋 Next steps:")
+    UI.message("   1. Check App Store Connect for submission status")
+    UI.message("   2. Review time: typically 24-48 hours")
+    UI.message("   3. App will go live after manual release approval")
+  end
+
+  desc "Submit existing build for App Store review (no build/upload)"
+  lane :submit_only do
+    # Authenticate with App Store Connect API
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["ASC_KEY_CONTENT"]),
+      is_key_content_base64: false
+    )
+
+    # Get current version info
+    version = get_version_number(xcodeproj: XCODEPROJ, target: "WorkOut Log")
+    build_number = get_info_plist_value(
+      path: "WorkOut-Log-Info.plist",
+      key: "CFBundleVersion"
+    )
+
+    UI.header("📤 Submitting existing build #{version} (#{build_number}) for App Store review")
+
+    # Submit for review without uploading (assumes build already exists)
+    deliver(
+      api_key: api_key,
+      submit_for_review: true,
+      force: true,
+      skip_binary_upload: true,  # Skip binary upload - use existing build
+      skip_metadata: true,
+      skip_screenshots: true,
+      automatic_release: false,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false
+      }
+    )
+
+    UI.success("✅ Successfully submitted version #{version} (#{build_number}) for App Store review!")
+    UI.message("📋 Next steps:")
+    UI.message("   1. Check App Store Connect for submission status")
+    UI.message("   2. Review time: typically 24-48 hours")
+    UI.message("   3. App will go live after manual release approval")
+  end
+
+  # ========================================
+  # HELPER LANES
+  # ========================================
+
+  desc "Clean derived data and build artifacts"
+  lane :clean do
+    clean_build_artifacts
+    clear_derived_data
+    UI.success("✅ Cleaned build artifacts and derived data")
+  end
+
+  desc "Run SwiftLint (if configured)"
+  lane :lint do
+    swiftlint(
+      mode: :lint,
+      executable: "Pods/SwiftLint/swiftlint",
+      raise_if_swiftlint_error: true
+    )
+  end
+
+  desc "Verify export compliance settings (ITSAppUsesNonExemptEncryption)"
+  lane :check_export_compliance do
+    UI.header("🔍 Checking Export Compliance Settings")
+
+    plist_path = "../WorkOut-Log-Info.plist"
+    plist_filename = "WorkOut-Log-Info.plist"
+
+    # Check if Info.plist exists
+    unless File.exist?(plist_path)
+      UI.user_error!("❌ Info.plist not found at: #{plist_path}")
+    end
+
+    # Read the value from Info.plist
+    encryption_value = get_info_plist_value(
+      path: plist_filename,
+      key: "ITSAppUsesNonExemptEncryption"
+    )
+
+    # Verify the value
+    if encryption_value.nil?
+      UI.user_error!("❌ ITSAppUsesNonExemptEncryption key is missing in #{plist_filename}")
+    elsif encryption_value == false || encryption_value == "false" || encryption_value == "NO"
+      UI.success("✅ Export compliance correctly set: ITSAppUsesNonExemptEncryption = false")
+      UI.success("✅ Target: WorkOut Log")
+      UI.success("✅ Info.plist: #{plist_filename}")
+      UI.message("")
+      UI.message("📋 Summary:")
+      UI.message("   • App does not use exempt encryption")
+      UI.message("   • Export compliance questions will be skipped in App Store Connect")
+      UI.message("   • Safe for apps using only standard iOS frameworks (URLSession, etc.)")
+    else
+      UI.user_error!("❌ ITSAppUsesNonExemptEncryption has incorrect value: #{encryption_value} (expected: false)")
+    end
+  end
+
+  # ========================================
+  # ERROR HANDLING
+  # ========================================
+
+  error do |lane, exception|
+    UI.error("❌ Lane #{lane} failed with exception:")
+    UI.error(exception.message)
+  end
+end

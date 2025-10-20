@@ -1,0 +1,15 @@
+# Fastlane Appfile
+# Bundle identifier for your app
+app_identifier("com.Ben.WorkOut-Log")
+
+# Your Apple Developer account email
+apple_id("kei7659@daum.net")
+
+# App Store Connect Team ID (optional if you have only one team)
+# itc_team_id("YOUR_ITC_TEAM_ID")
+
+# Developer Portal Team ID (optional if you have only one team)
+# team_id("YOUR_TEAM_ID")
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

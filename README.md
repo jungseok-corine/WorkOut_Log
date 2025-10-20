@@ -434,6 +434,21 @@ cd Docs && ./export.sh
 
 ---
 
+## 🚀 CI/CD & Fastlane
+
+이 프로젝트는 **Fastlane**을 사용하여 빌드, 테스트, TestFlight 배포를 자동화합니다. PR마다 자동으로 테스트가 실행되며, `v*` 태그를 푸시하면 GitHub Actions가 TestFlight에 자동으로 배포합니다.
+
+**📘 자세한 가이드**: [Docs/Fastlane_Guide.md](Docs/Fastlane_Guide.md) (환경 설정, 로컬 실행, CI 워크플로우, 트러블슈팅 포함)
+
+**로컬 실행 (3 commands):**
+```bash
+bundle install                      # Ruby 의존성 설치
+bundle exec fastlane tests          # 테스트 실행
+bundle exec fastlane beta           # TestFlight 배포 (App Store Connect API 키 필요)
+```
+
+---
+
 ## 🤝 Contributing
 
 ### Development Workflow
